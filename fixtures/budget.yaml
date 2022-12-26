@@ -1,0 +1,7 @@
+App\Entity\Budget:
+    budget_{1..4}:
+        title: 'Budget <current()>'
+        date: <date(m-Y)>
+        status: <enum('App\Entity\Enum\BudgetStatus::Draft')>
+        transactions: ['@transaction_<current()>']
+        

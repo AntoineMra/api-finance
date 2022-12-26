@@ -1,0 +1,4 @@
+App\Entity\Domain:
+
+    domain_{1..4}:
+        label: 'Domain <current()>'

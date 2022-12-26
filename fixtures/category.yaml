@@ -1,0 +1,6 @@
+App\Entity\Category:
+    
+    category_{1..4}:
+        label: 'Category <current()>'
+        domain: '@domain_<current()>'
+        

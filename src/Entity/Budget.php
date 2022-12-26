@@ -2,7 +2,6 @@
 
 namespace App\Entity;
 
-use App\Entity\Transaction;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Post;
@@ -16,6 +15,8 @@ use ApiPlatform\Metadata\GetCollection;
 use Doctrine\Common\Collections\Collection;
 use Gedmo\Mapping\Annotation\Timestampable;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: BudgetRepository::class)]
 #[ApiResource(
@@ -24,32 +25,33 @@ use Doctrine\Common\Collections\ArrayCollection;
         new Put(),
         new Delete(),
         new Get(
-            name: 'transactions',
             uriTemplate: '/places/{id}/transactions',
             normalizationContext: ['groups' => ['budget_transactions:read']],
-            denormalizationContext: ['groups' => ['budget_transactions:write']]
+            denormalizationContext: ['groups' => ['budget_transactions:write']],
+            name: 'transactions'
         ),
         new GetCollection(),
         new Post(),
     ],
     normalizationContext: ['groups' => ['budget:read']],
     denormalizationContext: ['groups' => ['budget:write']]
-)] final class Budget
+)]
+class Budget
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
+    #[ORM\Column(type: 'uuid', unique: true)]
+    private ?Uuid $id;
 
     #[ORM\Column(length: 255)]
     #[Groups(['budget:read', 'budget:write'])]
     private ?string $title = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[ORM\Column(length: 255)]
     #[Groups(['budget:read', 'budget:write'])]
-    private ?\DateTimeInterface $date = null;
+    private ?string $date = null;
 
-    #[ORM\Column(length: 255, enumType: BudgetStatus::class, nullable: true)]
+    #[ORM\Column(length: 255, nullable: true, enumType: BudgetStatus::class)]
     #[Groups(['budget:read', 'budget:write'])]
     private ?BudgetStatus $status = null;
 
@@ -68,10 +70,11 @@ use Doctrine\Common\Collections\ArrayCollection;
 
     public function __construct()
     {
+        $this->id = $id ?? Uuid::v6();
         $this->transactions = new ArrayCollection();
     }
 
-    public function getId(): ?int
+    public function getId(): Uuid
     {
         return $this->id;
     }
@@ -88,24 +91,24 @@ use Doctrine\Common\Collections\ArrayCollection;
         return $this;
     }
 
-    public function getDate(): ?\DateTimeInterface
+    public function getDate(): string
     {
-        return date_format($this->date, "mmYY");
+        return $this->date;
     }
 
-    public function setDate(\DateTimeInterface $date): self
+    public function setDate(string $date): self
     {
         $this->date = $date;
 
         return $this;
     }
 
-    public function getStatus(): ?string
+    public function getStatus(): BudgetStatus
     {
         return $this->status;
     }
 
-    public function setStatus(?string $status): self
+    public function setStatus(?BudgetStatus $status): self
     {
         $this->status = $status;
 

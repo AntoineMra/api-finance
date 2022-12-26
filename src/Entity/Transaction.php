@@ -2,17 +2,20 @@
 
 namespace App\Entity;
 
+use App\Entity\Enum\TransactionType;
 use App\Repository\TransactionRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: TransactionRepository::class)]
 class Transaction
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
+    #[ORM\Column(type: 'uuid', unique: true)]
+    private ?Uuid $id;
 
     #[ORM\Column(length: 255)]
     #[Groups(['budget:read', 'budget:write'])]
@@ -22,21 +25,30 @@ class Transaction
     #[Groups(['budget:read', 'budget:write'])]
     private ?int $amount = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    #[ORM\Column(length: 255, nullable: true)]
     #[Groups(['budget:read', 'budget:write'])]
-    private ?\DateTimeInterface $date = null;
+    private ?string $date = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255,  enumType: TransactionType::class)]
     #[Groups(['budget:read', 'budget:write'])]
-    private ?string $type = null;
+    private ?TransactionType $type = null;
 
     #[ORM\ManyToOne(inversedBy: 'transactions')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Budget $budget = null;
 
-    public function getId(): ?int
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Category $category = null;
+
+    public function __construct()
     {
-        return $this->id;
+        $this->id = $id ?? Uuid::v6();
+    }
+
+    public function getId(): ?Uuid
+    {
+        return $this->id = $id ?? Uuid::v6();
     }
 
     public function getLabel(): ?string
@@ -63,24 +75,24 @@ class Transaction
         return $this;
     }
 
-    public function getDate(): ?\DateTimeInterface
+    public function getDate(): ?string
     {
         return $this->date;
     }
 
-    public function setDate(?\DateTimeInterface $date): self
+    public function setDate(?string $date): self
     {
         $this->date = $date;
 
         return $this;
     }
 
-    public function getType(): ?string
+    public function getType(): TransactionType
     {
         return $this->type;
     }
 
-    public function setType(string $type): self
+    public function setType(TransactionType $type): self
     {
         $this->type = $type;
 
@@ -95,6 +107,18 @@ class Transaction
     public function setBudget(?Budget $budget): self
     {
         $this->budget = $budget;
+
+        return $this;
+    }
+
+    public function getCategory(): ?Category
+    {
+        return $this->category;
+    }
+
+    public function setCategory(?Category $category): self
+    {
+        $this->category = $category;
 
         return $this;
     }

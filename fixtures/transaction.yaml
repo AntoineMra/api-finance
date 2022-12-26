@@ -1,0 +1,10 @@
+App\Entity\Transaction:
+    transaction (template):
+        label: <company()>
+        amount: <randomNumber(3, false)>
+        date: <date()>
+        type: <randomEnum('App\Entity\Enum\TransactionType')>
+        
+    transaction_{1..4} (extends transaction):
+        category: '@category_<current()>'
+        
