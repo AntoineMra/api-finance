@@ -53,5 +53,10 @@ cc: c=c:c ## Clear the cache
 cc: sf
 
 ## —— Fixtures ——————————————————————————————————————————————————————————————
-fixtures: ## Run fixtures hautelook generation
+fxt: ## Run fixtures hautelook generation
 	@$(SYMFONY) hautelook:fixtures:load
+
+## —— Database Migration ——————————————————————————————————————————————————————————————
+db: ## Run fixtures hautelook generation
+	@$(SYMFONY) make:migration
+	@$(SYMFONY) doctrine:migrations:migrate

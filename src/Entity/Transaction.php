@@ -2,14 +2,25 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 use App\Entity\Enum\TransactionType;
 use App\Repository\TransactionRepository;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: TransactionRepository::class)]
+#[ApiResource(
+    operations: [
+        new Put(),
+        new Delete(),
+        new Post(),
+    ],
+    denormalizationContext: ['groups' => ['transaction:write']]
+)]
 class Transaction
 {
     #[ORM\Id]
@@ -18,27 +29,29 @@ class Transaction
     private ?Uuid $id;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['budget:read', 'budget:write'])]
+    #[Groups(['budget:read', 'category:read', 'domain:read', 'transaction:write'])]
     private ?string $label = null;
 
     #[ORM\Column]
-    #[Groups(['budget:read', 'budget:write'])]
+    #[Groups(['budget:read', 'category:read', 'domain:read', 'transaction:write'])]
     private ?int $amount = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['budget:read', 'budget:write'])]
+    #[Groups(['budget:read', 'category:read', 'domain:read', 'transaction:write'])]
     private ?string $date = null;
 
     #[ORM\Column(length: 255,  enumType: TransactionType::class)]
-    #[Groups(['budget:read', 'budget:write'])]
+    #[Groups(['budget:read', 'category:read', 'domain:read', 'transaction:write'])]
     private ?TransactionType $type = null;
 
     #[ORM\ManyToOne(inversedBy: 'transactions')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups('transaction:write')]
     private ?Budget $budget = null;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups('transaction:write')]
     private ?Category $category = null;
 
     public function __construct()

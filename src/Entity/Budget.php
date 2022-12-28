@@ -24,12 +24,6 @@ use Symfony\Component\Uid\Uuid;
         new Get(),
         new Put(),
         new Delete(),
-        new Get(
-            uriTemplate: '/places/{id}/transactions',
-            normalizationContext: ['groups' => ['budget_transactions:read']],
-            denormalizationContext: ['groups' => ['budget_transactions:write']],
-            name: 'transactions'
-        ),
         new GetCollection(),
         new Post(),
     ],
