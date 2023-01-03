@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Post;
@@ -17,6 +19,7 @@ use Gedmo\Mapping\Annotation\Timestampable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\Uuid;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: BudgetRepository::class)]
 #[ApiResource(
@@ -30,6 +33,7 @@ use Symfony\Component\Uid\Uuid;
     normalizationContext: ['groups' => ['budget:read']],
     denormalizationContext: ['groups' => ['budget:write']]
 )]
+#[ApiFilter()]
 class Budget
 {
     #[ORM\Id]
@@ -41,7 +45,9 @@ class Budget
     #[Groups(['budget:read', 'budget:write'])]
     private ?string $title = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 7)]
+    #[ApiProperty(example: '09/2022')]
+    #[Assert\NotBlank, Assert\Length(max: 7), Assert\Regex('/^(0?[1-9]|[1][0-2])\/[0-9]{4}+$/i')]
     #[Groups(['budget:read', 'budget:write'])]
     private ?string $date = null;
 
