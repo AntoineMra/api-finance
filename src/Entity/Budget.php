@@ -33,7 +33,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     normalizationContext: ['groups' => ['budget:read']],
     denormalizationContext: ['groups' => ['budget:write']]
 )]
-#[ApiFilter()]
+//#[ApiFilter()]
 class Budget
 {
     #[ORM\Id]
