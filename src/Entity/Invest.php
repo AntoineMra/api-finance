@@ -39,25 +39,25 @@ class Invest
 
     #[ORM\Column(length: 255)]
     #[Groups(['invest:read', 'invest:post'])]
-    private ?string $support = null;
+    private string $support;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     #[Groups(['invest:read', 'invest:post', 'invest:put'])]
     private ?float $expectedReturn = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     #[Groups(['invest:read', 'invest:post', 'invest:put'])]
     private ?int $monthlyInvestment = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     #[Groups(['invest:read', 'invest:post', 'invest:put'])]
     private ?string $specificCondition = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     #[Groups(['invest:read', 'invest:post', 'invest:put'])]
     private ?float $currentAmount = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     #[Groups(['invest:read', 'invest:post'])]
     private ?int $initialAmount = null;
 
@@ -76,7 +76,7 @@ class Invest
         return $this->id;
     }
 
-    public function getSupport(): ?string
+    public function getSupport(): string
     {
         return $this->support;
     }

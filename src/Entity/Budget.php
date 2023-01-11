@@ -2,11 +2,13 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Post;
+use App\Validator\Constraints\UniqueMonthBudget;
 use Doctrine\DBAL\Types\Types;
 use ApiPlatform\Metadata\Delete;
 use Doctrine\ORM\Mapping as ORM;
@@ -33,7 +35,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     normalizationContext: ['groups' => ['budget:read']],
     denormalizationContext: ['groups' => ['budget:write']]
 )]
-//#[ApiFilter()]
+#[ApiFilter(DateFilter::class, properties: ['createdAt', 'date'])]
 class Budget
 {
     #[ORM\Id]
@@ -43,13 +45,14 @@ class Budget
 
     #[ORM\Column(length: 255)]
     #[Groups(['budget:read', 'budget:write'])]
-    private ?string $title = null;
+    private string $title;
 
-    #[ORM\Column(length: 7)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[ApiProperty(example: '09/2022')]
-    #[Assert\NotBlank, Assert\Length(max: 7), Assert\Regex('/^(0?[1-9]|[1][0-2])\/[0-9]{4}+$/i')]
+    #[Assert\NotBlank]
+    #[UniqueMonthBudget]
     #[Groups(['budget:read', 'budget:write'])]
-    private ?string $date = null;
+    private \DateTime $date;
 
     #[ORM\Column(length: 255, nullable: true, enumType: BudgetStatus::class)]
     #[Groups(['budget:read', 'budget:write'])]
@@ -66,8 +69,6 @@ class Budget
     #[Groups('budget:read')]
     private \DateTime $createdAt;
 
-
-
     public function __construct()
     {
         $this->id = $id ?? Uuid::v6();
@@ -79,7 +80,7 @@ class Budget
         return $this->id;
     }
 
-    public function getTitle(): ?string
+    public function getTitle(): string
     {
         return $this->title;
     }
@@ -91,12 +92,18 @@ class Budget
         return $this;
     }
 
-    public function getDate(): string
+    public function getDate(): \DateTime
     {
         return $this->date;
     }
 
-    public function setDate(string $date): self
+    #[Groups('budget:read')]
+    public function getFormatedDate(): string
+    {
+        return $this->date->format('m/y');
+    }
+
+    public function setDate(?\DateTime $date): self
     {
         $this->date = $date;
 
