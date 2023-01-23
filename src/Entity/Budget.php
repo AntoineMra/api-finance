@@ -27,7 +27,9 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiResource(
     operations: [
         new Get(),
-        new Put(),
+        new Put(
+            denormalizationContext: ['groups' => ['budget:put']]
+        ),
         new Delete(),
         new GetCollection(),
         new Post(),
@@ -44,22 +46,23 @@ class Budget
     private ?Uuid $id;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['budget:read', 'budget:write'])]
+    #[ApiProperty(example: 'Budget Janvier 2023')]
+    #[Groups(['budget:read', 'budget:write', 'budget:put'])]
     private string $title;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    #[ApiProperty(example: '09/2022')]
     #[Assert\NotBlank]
     #[UniqueMonthBudget]
-    #[Groups(['budget:read', 'budget:write'])]
+    #[Groups(['budget:read', 'budget:write', 'budget:put'])]
     private \DateTime $date;
 
-    #[ORM\Column(length: 255, nullable: true, enumType: BudgetStatus::class)]
-    #[Groups(['budget:read', 'budget:write'])]
-    private ?BudgetStatus $status = null;
+    #[ORM\Column(type: Types::STRING, length: 255, enumType: BudgetStatus::class)]
+    #[ApiProperty(example: 'Draft')]
+    #[Groups(['budget:read', 'budget:put'])]
+    private BudgetStatus $status;
 
     #[ORM\OneToMany(mappedBy: 'budget', targetEntity: Transaction::class, orphanRemoval: true)]
-    #[Groups('budget:read')]
+    #[Groups(['budget:read', 'budget:put'])]
     private Collection $transactions;
 
     /**
@@ -73,6 +76,7 @@ class Budget
     {
         $this->id = $id ?? Uuid::v6();
         $this->transactions = new ArrayCollection();
+        $this->status = BudgetStatus::ToBeDone;
     }
 
     public function getId(): Uuid

@@ -2,40 +2,81 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
+use App\Entity\Enum\GoalStatus;
 use App\Repository\GoalRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation\Timestampable;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: GoalRepository::class)]
+#[ApiResource(
+    operations: [
+        new Get(),
+        new Put(
+            denormalizationContext: ['groups' => ['invest:put']],
+        ),
+        new Delete(),
+        new GetCollection(),
+        new Post(
+            denormalizationContext: ['groups' => ['invest:post']],
+        ),
+    ],
+    normalizationContext: ['groups' => ['invest:read']],
+)]
 class Goal
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
+    #[ORM\Column(type: 'uuid', unique: true)]
+    #[Groups('goal:read')]
+    private ?Uuid $id;
 
     #[ORM\Column(length: 255)]
-    private ?string $name = null;
+    #[Groups(['goal:read', 'goal:write'])]
+    private string $name;
 
     #[ORM\Column]
-    private ?int $amount = null;
+    #[Groups(['goal:read', 'goal:write'])]
+    private int $amount;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Groups(['goal:read', 'goal:write'])]
     private ?\DateTimeInterface $expectedEnding = null;
 
     #[ORM\ManyToMany(targetEntity: Invest::class, inversedBy: 'goals')]
+    #[Groups(['goal:read', 'goal:write'])]
     private Collection $investments;
+
+    #[ORM\Column(length: 255, nullable: true, enumType: GoalStatus::class)]
+    #[Groups(['goal:read', 'goal:write'])]
+    private ?GoalStatus $status = null;
+
+    /**
+     * @Timestampable(on="create")
+     */
+    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Groups('goal:read')]
+    private \DateTime $createdAt;
 
     public function __construct()
     {
+        $this->id = $id ?? Uuid::v6();
         $this->investments = new ArrayCollection();
     }
 
-    public function getId(): ?int
+    public function getId(): ?Uuid
     {
-        return $this->id;
+        return $this->id = $id ?? Uuid::v6();
     }
 
     public function getName(): ?string
@@ -50,7 +91,7 @@ class Goal
         return $this;
     }
 
-    public function getAmount(): ?int
+    public function getAmount(): int
     {
         return $this->amount;
     }
@@ -72,6 +113,12 @@ class Goal
         $this->expectedEnding = $expectedEnding;
 
         return $this;
+    }
+
+    #[Groups('goal:read')]
+    public function getTimeRemaining(): ?string
+    {
+        return date_diff($this->expectedEnding, new \DateTime())->format("m:d / H:i");
     }
 
     /**
@@ -96,5 +143,15 @@ class Goal
         $this->investments->removeElement($investment);
 
         return $this;
+    }
+
+    public function getStatus(): ?GoalStatus
+    {
+        return $this->status;
+    }
+
+    public function setStatus(?GoalStatus $status): void
+    {
+        $this->status = $status;
     }
 }

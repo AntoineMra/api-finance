@@ -12,6 +12,13 @@ api_platform:
     # Set this to false if you want Webby to disappear.
     show_webby: false
     
+    formats:
+        json: [ "application/json" ]
+        jsonld: [ "application/ld+json" ]
+        jsonapi: [ "application/vnd.api+json" ]
+        html: [ "text/html" ]
+        csv: [ "text/csv" ]
+    
     swagger:
         api_keys:
             JWT:
