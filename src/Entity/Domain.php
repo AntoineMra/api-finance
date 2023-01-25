@@ -7,6 +7,7 @@ use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 use App\Repository\DomainRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -18,6 +19,7 @@ use Symfony\Component\Uid\Uuid;
 #[ApiResource(
     operations: [
         new Get(),
+        new Put(),
         new Delete(),
         new GetCollection(),
         new Post(),
@@ -75,7 +77,7 @@ class Domain
     {
         if (!$this->categories->contains($category)) {
             $this->categories->add($category);
-            $category->setCategoryDomain($this);
+            $category->setDomain($this);
         }
 
         return $this;
@@ -85,11 +87,36 @@ class Domain
     {
         if ($this->categories->removeElement($category)) {
             // set the owning side to null (unless already changed)
-            if ($category->getCategoryDomain() === $this) {
-                $category->setCategoryDomain(null);
+            if ($category->getDomain() === $this) {
+                $category->setDomain(null);
             }
         }
 
         return $this;
+    }
+
+    #[Groups('domain:read')]
+    public function getTransactionsTotal(): int
+    {
+        $total = 0;
+        /** @var Category $category */
+        foreach ($this->categories as $category) {
+            $total += $category->getTransactionsTotal();
+        }
+
+        return $total;
+    }
+
+
+    #[Groups('domain:read')]
+    public function getTransactionsMedium(): int
+    {
+        $medium = 0;
+        /** @var Category $category */
+        foreach ($this->categories as $category) {
+            $medium += $category->getTransactionsMedium() / $this->categories->count();
+        }
+
+        return $medium;
     }
 }

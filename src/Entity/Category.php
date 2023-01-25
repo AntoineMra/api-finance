@@ -7,6 +7,7 @@ use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 use App\Repository\CategoryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -18,6 +19,7 @@ use Symfony\Component\Uid\Uuid;
 #[ApiResource(
     operations: [
         new Get(),
+        new Put(),
         new Delete(),
         new GetCollection(),
         new Post(),
@@ -38,7 +40,7 @@ class Category
 
     #[ORM\ManyToOne(inversedBy: 'categories')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['category:read', 'domain:read', 'category:write'])]
+    #[Groups(['category:read', 'category:write'])]
     private ?Domain $domain = null;
 
     #[ORM\OneToMany(mappedBy: 'category', targetEntity: Transaction::class, orphanRemoval: false)]
@@ -83,6 +85,31 @@ class Category
     public function getTransactions(): Collection
     {
         return $this->transactions;
+    }
+
+    #[Groups('category:read')]
+    public function getTransactionsTotal(): int
+    {
+        $total = 0;
+        /** @var Transaction $transaction */
+        foreach ($this->transactions as $transaction) {
+            $total += $transaction->getAmount();
+        }
+
+        return $total;
+    }
+
+
+    #[Groups('category:read')]
+    public function getTransactionsMedium(): int
+    {
+        $medium = 0;
+        /** @var Transaction $transaction */
+        foreach ($this->transactions as $transaction) {
+            $medium += $transaction->getAmount() / $this->transactions->count();
+        }
+
+        return $medium;
     }
 
     public function setTransactions(Collection $transactions): void
