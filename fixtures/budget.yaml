@@ -9,7 +9,7 @@ App\Entity\Budget:
         title: 'Budget Test'
         date:  <dateTimeBetween('-1 week', 'now')>
         status: <enum('App\Entity\Enum\BudgetStatus::Draft')>
-        transactions: [ '@transaction_1' ]
+        transactions: [ '@transaction_1', '@transaction_2', '@transaction_3', '@transaction_4' ]
         
     budget_test_bis:
         title: 'Budget Test Bis'

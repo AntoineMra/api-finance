@@ -32,10 +32,11 @@ class Domain
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'uuid', unique: true)]
+    #[Groups('transaction:read')]
     private ?Uuid $id;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['domain:read', 'domain:write'])]
+    #[Groups(['transaction:read', 'domain:read', 'domain:write'])]
     private ?string $label = null;
 
     #[ORM\OneToMany(mappedBy: 'domain', targetEntity: Category::class, orphanRemoval: true)]

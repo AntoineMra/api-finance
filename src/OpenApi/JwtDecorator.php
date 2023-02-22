@@ -36,7 +36,7 @@ class JwtDecorator implements OpenApiFactoryInterface
                 ],
                 'password' => [
                     'type' => 'string',
-                    'example' => 'SAI@CHI13',
+                    'example' => 'testing',
                 ],
             ],
         ]);

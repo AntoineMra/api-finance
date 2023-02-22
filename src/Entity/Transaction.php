@@ -2,8 +2,14 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Elasticsearch\Filter\MatchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Link;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use App\Entity\Enum\TransactionType;
@@ -21,27 +27,39 @@ use Symfony\Component\Uid\Uuid;
     ],
     denormalizationContext: ['groups' => ['transaction:write']]
 )]
+#[ApiResource(
+    uriTemplate: '/budgets/{budgetId}/transactions',
+    operations: [ new GetCollection() ],
+    uriVariables: [
+        'budgetId' => new Link(toProperty: 'budget', fromClass: Budget::class),
+    ],
+    normalizationContext: ['groups' => ['transaction:read']]
+)]
+#[ApiFilter(SearchFilter::class, properties: ['label' => 'partial'])]
+#[ApiFilter(OrderFilter::class, properties: ['amount'])]
+#[ApiFilter(MatchFilter::class, properties: ['type'])]
 class Transaction
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'uuid', unique: true)]
+    #[Groups('transaction:read')]
     private ?Uuid $id;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['budget:read', 'category:read', 'domain:read', 'transaction:write'])]
+    #[Groups(['transaction:read', 'category:read', 'domain:read', 'transaction:write'])]
     private ?string $label = null;
 
     #[ORM\Column]
-    #[Groups(['budget:read', 'category:read', 'domain:read', 'transaction:write'])]
+    #[Groups(['transaction:read', 'category:read', 'domain:read', 'transaction:write'])]
     private ?int $amount = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['budget:read', 'category:read', 'domain:read', 'transaction:write'])]
+    #[Groups(['transaction:read', 'category:read', 'domain:read', 'transaction:write'])]
     private ?string $date = null;
 
     #[ORM\Column(length: 255,  enumType: TransactionType::class)]
-    #[Groups(['budget:read', 'category:read', 'domain:read', 'transaction:write'])]
+    #[Groups(['transaction:read', 'category:read', 'domain:read', 'transaction:write'])]
     private ?TransactionType $type = null;
 
     #[ORM\ManyToOne(inversedBy: 'transactions')]
@@ -51,7 +69,7 @@ class Transaction
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups('transaction:write')]
+    #[Groups(['transaction:read', 'transaction:write'])]
     private ?Category $category = null;
 
     public function __construct()

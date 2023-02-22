@@ -32,15 +32,16 @@ class Category
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'uuid', unique: true)]
+    #[Groups('transaction:read')]
     private ?Uuid $id;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['category:read', 'domain:read', 'category:write'])]
+    #[Groups(['transaction:read', 'category:read', 'domain:read', 'category:write'])]
     private ?string $label = null;
 
     #[ORM\ManyToOne(inversedBy: 'categories')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['category:read', 'category:write'])]
+    #[Groups(['transaction:read', 'category:read', 'category:write'])]
     private ?Domain $domain = null;
 
     #[ORM\OneToMany(mappedBy: 'category', targetEntity: Transaction::class, orphanRemoval: false)]
