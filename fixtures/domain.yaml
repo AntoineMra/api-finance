@@ -1,4 +1,12 @@
 App\Entity\Domain:
 
-    domain_{1..4}:
-        label: 'Domain <current()>'
+    domain_1:
+        label: 'Besoins'
+    domain_2:
+        label: 'Dépenses courantes'
+    domain_3:
+        label: 'Plaisirs'
+    domain_4:
+        label: 'Epargne'
+    domain_5:
+        label: 'Autres'

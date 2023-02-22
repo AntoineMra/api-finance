@@ -2,4 +2,4 @@ App\Entity\User:
     user_1:
         username: "Antoine"
         roles: ["ROLE_USER"]
-        password: <hashPassword('testing')>
+        password: <hashPassword('SAI@CHI13')>
