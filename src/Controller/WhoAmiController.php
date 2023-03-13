@@ -17,7 +17,7 @@ class WhoAmiController extends AbstractController
     {
         $user = $this->getUser();
 
-        if (!$user instanceof AbstractUser) {
+        if (!$user instanceof User) {
             return new JsonResponse(['message' => 'Invalid user type'], 401);
         }
 
