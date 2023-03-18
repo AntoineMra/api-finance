@@ -38,8 +38,7 @@ class WhoAmiDecorator implements OpenApiFactoryInterface
                     '200' => [
                         'description' => 'User informations',
                         'content' => [
-                            'application/json' => [
-                            ],
+                            'application/json' => [],
                         ],
                     ],
                     '401' => [
@@ -53,6 +52,6 @@ class WhoAmiDecorator implements OpenApiFactoryInterface
             ),
         );
 
-        $openApi->getPaths()->addPath('/whoami', $pathItem);
+        $openApi->getPaths()->addPath('/api/whoami', $pathItem);
     }
 }
