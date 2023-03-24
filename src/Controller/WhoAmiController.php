@@ -21,6 +21,9 @@ class WhoAmiController extends AbstractController
             return new JsonResponse(['message' => 'Invalid user type'], 401);
         }
 
-        return new JsonResponse($serializer->serialize($user, 'json'), json: true);
+        return new JsonResponse($serializer->serialize([
+            'username' => $user->getUserIdentifier(),
+            'roles' => $user->getRoles()
+        ], 'json'), json: true);
     }
 }
