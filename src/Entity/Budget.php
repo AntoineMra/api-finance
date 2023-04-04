@@ -2,25 +2,26 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
-use ApiPlatform\Metadata\ApiFilter;
-use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Post;
-use App\Validator\Constraints\UniqueMonthBudget;
 use Doctrine\DBAL\Types\Types;
+use Symfony\Component\Uid\Uuid;
 use ApiPlatform\Metadata\Delete;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Enum\BudgetStatus;
+use ApiPlatform\Metadata\ApiFilter;
 use App\Repository\BudgetRepository;
+use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\GetCollection;
 use Doctrine\Common\Collections\Collection;
 use Gedmo\Mapping\Annotation\Timestampable;
+use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
+use App\Validator\Constraints\UniqueMonthBudget;
 use Doctrine\Common\Collections\ArrayCollection;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use Symfony\Component\Serializer\Annotation\Groups;
-use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: BudgetRepository::class)]
@@ -38,6 +39,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     denormalizationContext: ['groups' => ['budget:write']]
 )]
 #[ApiFilter(SearchFilter::class, properties: ['id' => 'exact', 'status' => 'exact', 'date' => 'partial'])]
+#[ApiFilter(OrderFilter::class, properties: ['createdAt' => 'DESC'])]
 class Budget
 {
     #[ORM\Id]
