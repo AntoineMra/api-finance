@@ -68,6 +68,11 @@ class Budget
     #[Groups(['budget:read', 'budget:put'])]
     private Collection $transactions;
 
+    #[ORM\OneToOne(targetEntity: BankExtraction::class)]
+    #[ORM\JoinColumn(nullable: true)]
+    #[ApiProperty(types: ['https://schema.org/image'])]
+    private ?BankExtraction $extraction = null;
+
     /**
      * @Timestampable(on="create")
      */
@@ -164,5 +169,17 @@ class Budget
     public function getCreatedAt(): \DateTime
     {
         return $this->createdAt;
+    }
+
+    public function getExtraction()
+    {
+        return $this->extraction;
+    }
+
+    public function setExtraction($extraction)
+    {
+        $this->extraction = $extraction;
+
+        return $this;
     }
 }

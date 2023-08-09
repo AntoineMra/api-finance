@@ -2,10 +2,13 @@
 
 namespace App\Service;
 
+use App\Entity\BankExtraction;
+
 class BudgetFileParser implements BudgetFileParserInterface
 {
-    public function parseExcelFile(): array
+    public function parse(BankExtraction $bankExtraction): array
     {
+        $transactions = [];
         // Get Requested Month
 
         // Get the excel file

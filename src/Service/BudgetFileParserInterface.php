@@ -2,11 +2,13 @@
 
 namespace App\Service;
 
+use App\Entity\BankExtraction;
+
 interface BudgetFileParserInterface
 {
     /**
      * @return array<int>
      */
-    public function parseExcelFile(): array;
+    public function parse(BankExtraction $bankExtraction): array;
 
 }
