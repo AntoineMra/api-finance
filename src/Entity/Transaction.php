@@ -62,6 +62,10 @@ class Transaction
     #[Groups(['transaction:read', 'category:read', 'domain:read', 'transaction:write'])]
     private ?TransactionType $type = null;
 
+    #[ORM\Column]
+    #[Groups(['transaction:read', 'category:read', 'domain:read', 'transaction:write'])]
+    private boolean $isPending = false;
+
     #[ORM\ManyToOne(inversedBy: 'transactions')]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups('transaction:write')]
@@ -114,6 +118,18 @@ class Transaction
     public function setDate(?string $date): self
     {
         $this->date = $date;
+
+        return $this;
+    }
+    
+    public function isPending(): boolean
+    {
+        return $this->isPending;
+    }
+
+    public function setIsPending(?boolean $isPending): self
+    {
+        $this->isPending = $isPending;
 
         return $this;
     }

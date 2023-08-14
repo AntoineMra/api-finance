@@ -39,28 +39,18 @@ class BankTranslationRepository extends ServiceEntityRepository
         }
     }
 
-//    /**
-//     * @return BankTranslation[] Returns an array of BankTranslation objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('g')
-//            ->andWhere('g.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('g.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    public function isLabelTranslated(string $label): ?BankTranslation
+    {
+        $expr = $this->_em->getExpressionBuilder();
+        $translation = $this
+            ->createQueryBuilder('bt')
+            ->select('bt')
+            ->where($expr->in('bt.bankLabel', ':label'))
+            ->setParameter(':label', $label)
+            ->getQuery()
+            ->getSingleScalarResult()
+        ;
 
-//    public function findOneBySomeField($value): ?BankTranslation
-//    {
-//        return $this->createQueryBuilder('g')
-//            ->andWhere('g.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+        return $translation;
+    }
 }

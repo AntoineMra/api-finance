@@ -8,6 +8,11 @@ use League\Csv\Reader;
 
 class BudgetFileParser implements BudgetFileParserInterface
 {
+    public function __construct(
+        private readonly BankTranslationRepository $bankTranslationRepository,
+    ) {
+    }
+
     /**
      * This function iams to parse a bank extraction csv file to import transactions | Warning this only Works with Credit Mutuel formated files
      */
@@ -31,16 +36,9 @@ class BudgetFileParser implements BudgetFileParserInterface
                 ->setHeaderOffset(0)
             ;
 
-            $this->getTranslatedTransaction($csv);
+            $this->getTranslatedTransactions($csv);
         }
 
-        // Isolate the lines from the requested month
-
-        // Loop through each line : tanslate name thourgh the CRUDABLE api table translation and return empty if unkonwn
-
-        // Foreach lines create a transactions that holds the amount of new lines with   
-        
-        // Return array of lines transactions 
 
 
         return $transactions;
@@ -51,11 +49,40 @@ class BudgetFileParser implements BudgetFileParserInterface
         foreach ($csv as $record) {
             $transaction = new Transaction();
 
-            $transaction->setAmount($record['montant']); // Check excel file to see if correct
+            if (isset($record['Crédit'])) {
+                $transactions->setType(TransactionType::Income)
+                $transaction->setAmount($record['montant']);
+            } else {
+                $transactions->setType(TransactionType::Expense)
+                $transaction->setAmount($record['montant']);
+            }
+
+            $transactions->setDate($record['Date'])
             $transactions->setBudget($budget);
-            // Parse Date to match API format
             // Parse Amount to set correct Transaction type
             // Retrieve Label & Category from Translation table
         }
+    }
+
+    private function formatLabels(string $label): string 
+    {
+        $arrayWords = explode(" ", $label);
+
+        if($arrayWords[0] === "PAIEMENT") {
+            array_slice($arrayWords, 3);
+        }
+        if($arrayWords[0] === "VIR") {
+            array_shift($arrayWords);
+        }
+        if(end($arrayWords) === "Carte") {
+            array_slice($arrayWords, -2);
+        }
+
+        return implode(" ", $arrayWords);
+    }
+
+    private function isMatchingTranslation(string $label): boolean
+    {
+        $bankTranslation = $this->bankTranslationRepository->isLabelTranslated($label);
     }
 }
