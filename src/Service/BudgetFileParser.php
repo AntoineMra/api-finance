@@ -59,12 +59,17 @@ class BudgetFileParser implements BudgetFileParserInterface
 
             $transactions->setDate($record['Date'])
             $transactions->setBudget($budget);
-            // Parse Amount to set correct Transaction type
-            // Retrieve Label & Category from Translation table
+
+            $formatedLabel = $this->formatLabel$record['Libellé']);
+            if($this->isMatchingTranslation($formatedLabel)) {
+                // TODO retrieve translation
+            } else {
+                // TODO set is pending to true and else to null
+            }
         }
     }
 
-    private function formatLabels(string $label): string 
+    private function formatLabel(string $label): string 
     {
         $arrayWords = explode(" ", $label);
 
