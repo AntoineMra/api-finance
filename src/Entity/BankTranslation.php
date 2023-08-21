@@ -33,7 +33,7 @@ class BankTranslation
     #[ORM\Column(length: 255)]
     private ?string $customLabel = null;
 
-    #[ORM\ManyToOne]
+    #[ORM\ManyToOne(targetEntity: Category::class)]
     #[ORM\JoinColumn(nullable: false)]
     private ?Category $category = null;
 

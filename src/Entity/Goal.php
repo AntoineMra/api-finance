@@ -47,7 +47,7 @@ class Goal
 
     #[ORM\Column]
     #[Groups(['goal:read', 'goal:write'])]
-    private int $amount;
+    private float $amount;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     #[Groups(['goal:read', 'goal:write'])]

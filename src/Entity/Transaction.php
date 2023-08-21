@@ -52,7 +52,7 @@ class Transaction
 
     #[ORM\Column]
     #[Groups(['transaction:read', 'category:read', 'domain:read', 'transaction:write'])]
-    private ?int $amount = null;
+    private float $amount;
 
     #[ORM\Column(length: 255, nullable: true)]
     #[Groups(['transaction:read', 'category:read', 'domain:read', 'transaction:write'])]
@@ -60,7 +60,7 @@ class Transaction
 
     #[ORM\Column(length: 255,  enumType: TransactionType::class)]
     #[Groups(['transaction:read', 'category:read', 'domain:read', 'transaction:write'])]
-    private ?TransactionType $type = null;
+    private TransactionType $type;
 
     #[ORM\Column]
     #[Groups(['transaction:read', 'category:read', 'domain:read', 'transaction:write'])]
@@ -98,7 +98,7 @@ class Transaction
         return $this;
     }
 
-    public function getAmount(): ?int
+    public function getAmount(): int
     {
         return $this->amount;
     }
