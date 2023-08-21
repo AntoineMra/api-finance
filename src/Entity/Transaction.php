@@ -64,7 +64,7 @@ class Transaction
 
     #[ORM\Column]
     #[Groups(['transaction:read', 'category:read', 'domain:read', 'transaction:write'])]
-    private boolean $isPending = false;
+    private bool $isPending = false;
 
     #[ORM\ManyToOne(inversedBy: 'transactions')]
     #[ORM\JoinColumn(nullable: false)]
@@ -122,12 +122,12 @@ class Transaction
         return $this;
     }
     
-    public function isPending(): boolean
+    public function isPending(): bool
     {
         return $this->isPending;
     }
 
-    public function setIsPending(?boolean $isPending): self
+    public function setIsPending(?bool $isPending): self
     {
         $this->isPending = $isPending;
 

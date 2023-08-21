@@ -2,9 +2,13 @@
 
 namespace App\Service;
 
-use App\Entity\BankExtraction;
-use Symfony\Component\Finder\Finder;
+use App\Entity\Budget;
 use League\Csv\Reader;
+use App\Entity\Transaction;
+use App\Entity\BankExtraction;
+use App\Entity\Enum\TransactionType;
+use Symfony\Component\Finder\Finder;
+use App\Repository\BankTranslationRepository;
 
 class BudgetFileParser implements BudgetFileParserInterface
 {
@@ -26,17 +30,15 @@ class BudgetFileParser implements BudgetFileParserInterface
 
         $finder = new Finder();
         $finder->in(__DIR__.'/public/media');
-        $finder->name(.$bankExtraction->getMediaObject()->filePath);
+        $finder->name($bankExtraction->getMediaObject()->filePath);
         $finder->files();
-
-        $month = $bankExtraction->getBudget()->getMonth();
 
         foreach ($finder as $file) {
             $csv = Reader::createFromPath($file->getRealPath())
                 ->setHeaderOffset(0)
             ;
 
-            $this->getTranslatedTransactions($csv);
+            $this->getTranslatedTransactions($csv, $bankExtraction->getBudget());
         }
 
 
@@ -46,27 +48,33 @@ class BudgetFileParser implements BudgetFileParserInterface
 
     private function getTranslatedTransactions(Reader $csv, Budget $budget): array
     {
+        $transactions = [];
+
         foreach ($csv as $record) {
             $transaction = new Transaction();
 
             if (isset($record['Crédit'])) {
-                $transactions->setType(TransactionType::Income)
+                $transaction->setType(TransactionType::Income);
                 $transaction->setAmount($record['montant']);
             } else {
-                $transactions->setType(TransactionType::Expense)
+                $transaction->setType(TransactionType::Expense);
                 $transaction->setAmount($record['montant']);
             }
 
-            $transactions->setDate($record['Date'])
-            $transactions->setBudget($budget);
+            $transaction->setDate($record['Date']);
+            $transaction->setBudget($budget);
 
-            $formatedLabel = $this->formatLabel$record['Libellé']);
+            $formatedLabel = $this->formatLabel($record['Libellé']);
             if($this->isMatchingTranslation($formatedLabel)) {
                 // TODO retrieve translation
             } else {
                 // TODO set is pending to true and else to null
             }
+
+            $transactions[] = $transaction;
         }
+
+        return $transactions;
     }
 
     private function formatLabel(string $label): string 
@@ -86,8 +94,10 @@ class BudgetFileParser implements BudgetFileParserInterface
         return implode(" ", $arrayWords);
     }
 
-    private function isMatchingTranslation(string $label): boolean
+    private function isMatchingTranslation(string $label): bool
     {
         $bankTranslation = $this->bankTranslationRepository->isLabelTranslated($label);
+
+        return $bankTranslation !== null;
     }
 }

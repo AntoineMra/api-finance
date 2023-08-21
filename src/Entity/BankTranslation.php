@@ -3,9 +3,10 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
-use App\Entity\MediaObject;
 use ApiPlatform\Metadata\Post;
-use App\Controller\MediaObject\CreateExtractionAction;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Put;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -46,5 +47,39 @@ class BankTranslation
         return $this->id = $id ?? Uuid::v6();
     }
 
-    // ADD GETTER & SETTER
+    public function getCategory()
+    {
+        return $this->category;
+    }
+
+    public function setCategory($category)
+    {
+        $this->category = $category;
+
+        return $this;
+    }
+
+    public function getCustomLabel()
+    {
+        return $this->customLabel;
+    }
+
+    public function setCustomLabel($customLabel)
+    {
+        $this->customLabel = $customLabel;
+
+        return $this;
+    }
+
+    public function getBankLabel()
+    {
+        return $this->bankLabel;
+    }
+
+    public function setBankLabel($bankLabel)
+    {
+        $this->bankLabel = $bankLabel;
+
+        return $this;
+    }
 }
