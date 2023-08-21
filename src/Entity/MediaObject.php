@@ -6,14 +6,15 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\OpenApi\Model;
 use App\Entity\BankExtraction;
+use Symfony\Component\Uid\Uuid;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
-use App\Controller\MediaObject\CreateMediaObjectAction;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 use Symfony\Component\Validator\Constraints as Assert;
+use App\Controller\MediaObject\CreateMediaObjectAction;
 
 
 #[Vich\Uploadable]
@@ -49,8 +50,11 @@ use Symfony\Component\Validator\Constraints as Assert;
 )]
 class MediaObject
 {
-    #[ORM\Id, ORM\Column, ORM\GeneratedValue]
-    private ?int $id = null;
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'uuid', unique: true)]
+    #[Groups(['media_object:read'])]
+    private ?Uuid $id = null;
 
     #[ApiProperty(types: ['https://schema.org/contentUrl'])]
     #[Groups(['media_object:read'])]
@@ -60,15 +64,20 @@ class MediaObject
     #[Assert\NotNull(groups: ['media_object_create'])]
     public ?File $file = null;
 
-    #[ORM\Column(nullable: true)] 
+    #[ORM\Column(nullable: true)]
     public ?string $filePath = null;
 
     #[ORM\OneToOne(targetEntity: BankExtraction::class)]
     #[ORM\JoinColumn(nullable: true)]
     #[ApiProperty(types: ['https://schema.org/image'])]
     public ?BankExtraction $extraction = null;
+
+    public function __construct()
+    {
+        $this->id = $id ?? Uuid::v6();
+    }
     
-    public function getId(): ?int
+    public function getId(): ?Uuid
     {
         return $this->id;
     }
