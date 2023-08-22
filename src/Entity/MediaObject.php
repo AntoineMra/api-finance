@@ -51,10 +51,10 @@ use App\Controller\MediaObject\CreateMediaObjectAction;
 class MediaObject
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
     #[ORM\Column(type: 'uuid', unique: true)]
+    #[ApiProperty(identifier: true)]
     #[Groups(['media_object:read'])]
-    private ?Uuid $id = null;
+    private ?Uuid $id;
 
     #[ApiProperty(types: ['https://schema.org/contentUrl'])]
     #[Groups(['media_object:read'])]
@@ -70,9 +70,10 @@ class MediaObject
     #[ORM\OneToOne(targetEntity: BankExtraction::class)]
     #[ORM\JoinColumn(nullable: true)]
     #[ApiProperty(types: ['https://schema.org/image'])]
+    #[Groups(['media_object:read'])]
     public ?BankExtraction $extraction = null;
-
-    public function __construct()
+    
+    public function __construct($id = null)
     {
         $this->id = $id ?? Uuid::v6();
     }

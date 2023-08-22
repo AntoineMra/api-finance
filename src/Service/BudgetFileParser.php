@@ -6,9 +6,13 @@ use App\Entity\Budget;
 use League\Csv\Reader;
 use App\Entity\Transaction;
 use App\Entity\BankExtraction;
+use App\Entity\BankTranslation;
+use League\Csv\CharsetConverter;
 use App\Entity\Enum\TransactionType;
 use Symfony\Component\Finder\Finder;
+use App\Entity\Enum\TransactionStatus;
 use App\Repository\BankTranslationRepository;
+use Doctrine\DBAL\Driver\Mysqli\Initializer\Charset;
 
 class BudgetFileParser implements BudgetFileParserInterface
 {
@@ -29,15 +33,17 @@ class BudgetFileParser implements BudgetFileParserInterface
         }
 
         $finder = new Finder();
-        $finder->in(__DIR__.'/public/media');
+        $finder->in(__DIR__.'/../../public/media');
         $finder->name($bankExtraction->getMediaObject()->filePath);
         $finder->files();
 
         foreach ($finder as $file) {
             $csv = Reader::createFromPath($file->getRealPath())
                 ->setHeaderOffset(0)
+                ->setDelimiter(';')
             ;
-
+            $csv->includeInputBOM();
+            CharsetConverter::addBOMSkippingTo($csv);
             $this->getTranslatedTransactions($csv, $bankExtraction->getBudget());
         }
 
@@ -49,27 +55,28 @@ class BudgetFileParser implements BudgetFileParserInterface
     private function getTranslatedTransactions(Reader $csv, Budget $budget): array
     {
         $transactions = [];
+        $records = $csv->getRecords();
 
-        foreach ($csv as $record) {
+        foreach ($records as $record) {
             $transaction = new Transaction();
 
             if (isset($record['Crédit'])) {
                 $transaction->setType(TransactionType::Income);
-                $transaction->setAmount($record['montant']);
+                $transaction->setAmount((int)$record['Cr?dit']);
             } else {
                 $transaction->setType(TransactionType::Expense);
-                $transaction->setAmount($record['montant']);
+                $transaction->setAmount(abs((int)$record['D?bit']));
             }
 
             $transaction->setDate($record['Date']);
             $transaction->setBudget($budget);
 
-            $formatedLabel = $this->formatLabel($record['Libellé']);
+            $formatedLabel = $this->formatLabel($record['Libell?']);
             $bankTranslation = $this->matchingTranslation($formatedLabel);
             if($bankTranslation !== null) {
-                $transactions->setLabel($bankTranslation->getCustomLabel());
-                $transactions->setCategory($bankTranslation->getCategory());
-                $transactions->setStatus(TransactionType::Validated);
+                $transaction->setLabel($bankTranslation->getCustomLabel());
+                $transaction->setCategory($bankTranslation->getCategory());
+                $transaction->setStatus(TransactionStatus::Validated);
             }
 
             $transactions[] = $transaction;

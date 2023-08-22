@@ -13,8 +13,8 @@ api_platform:
     show_webby: false
     
     formats:
-        json: [ "application/json" ]
         jsonld: [ "application/ld+json" ]
+        json: [ "application/json" ]
         jsonapi: [ "application/vnd.api+json" ]
         html: [ "text/html" ]
         csv: [ "text/csv" ]

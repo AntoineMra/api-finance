@@ -2,21 +2,24 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\Put;
+use ApiPlatform\Metadata\Link;
+use ApiPlatform\Metadata\Post;
+use Doctrine\DBAL\Types\Types;
+use Symfony\Component\Uid\Uuid;
+use ApiPlatform\Metadata\Delete;
+use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Metadata\ApiFilter;
+use App\Entity\Enum\TransactionType;
+use ApiPlatform\Metadata\ApiProperty;
+use ApiPlatform\Metadata\ApiResource;
+use App\Entity\Enum\TransactionStatus;
+use ApiPlatform\Metadata\GetCollection;
+use App\Repository\TransactionRepository;
 use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Elasticsearch\Filter\MatchFilter;
-use ApiPlatform\Metadata\ApiFilter;
-use ApiPlatform\Metadata\ApiResource;
-use ApiPlatform\Metadata\Delete;
-use ApiPlatform\Metadata\GetCollection;
-use ApiPlatform\Metadata\Link;
-use ApiPlatform\Metadata\Post;
-use ApiPlatform\Metadata\Put;
-use App\Entity\Enum\TransactionType;
-use App\Repository\TransactionRepository;
-use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
-use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: TransactionRepository::class)]
 #[ApiResource(
@@ -62,7 +65,6 @@ class Transaction
     #[Groups(['transaction:read', 'category:read', 'domain:read', 'transaction:write'])]
     private TransactionType $type;
 
-    //TODO REFACTOR TO ENUM
     #[ORM\Column(type: Types::STRING, length: 255, enumType: TransactionStatus::class)]
     #[ApiProperty(example: 'Draft')]
     #[Groups(['transaction:read', 'category:read', 'domain:read', 'transaction:write'])]
@@ -127,7 +129,7 @@ class Transaction
     
     public function getStatus(): TransactionStatus
     {
-        return $this->isPending;
+        return $this->status;
     }
 
     public function setStatus(TransactionStatus $status): self

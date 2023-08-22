@@ -4,34 +4,7 @@ App\Entity\Transaction:
         amount: <randomNumber(2, false)>
         date: <date()>
         type: <randomEnum('App\Entity\Enum\TransactionType')>
-
-    budget_1 (template, extends transaction):
         budget: '@budget_1'
 
-    budget_2 (template, extends transaction):
-        budget: '@budget_2'
-
-    budget_3 (template, extends transaction):
-        budget: '@budget_3'
-
-    budget_4 (template, extends transaction):
-        budget: '@budget_4'
-
-    budget_5 (template, extends transaction):
-        budget: '@budget_5'
-        
-    transaction_{1..10} (extends budget_1):
+    transaction_{1..10} (extends transaction):
         category: '@category_<randomDigitNotNull()>'
-
-    transaction_{11..20} (extends budget_2):
-        category: '@category_<randomDigitNotNull()>'
-
-    transaction_{21..30} (extends budget_3):
-        category: '@category_<randomDigitNotNull()>'
-
-    transaction_{31..40} (extends budget_4):
-        category: '@category_<randomDigitNotNull()>'
-
-    transaction_{41..50} (extends budget_5):
-        category: '@category_<randomDigitNotNull()>'
-        

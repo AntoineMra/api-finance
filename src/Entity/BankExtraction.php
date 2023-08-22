@@ -2,12 +2,13 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Metadata\ApiResource;
 use App\Entity\MediaObject;
 use ApiPlatform\Metadata\Post;
-use App\Controller\MediaObject\CreateExtractionAction;
-use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Uid\Uuid;
+use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Metadata\ApiProperty;
+use ApiPlatform\Metadata\ApiResource;
+use App\Controller\MediaObject\CreateExtractionAction;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: BankExtractionRepository::class)]
@@ -23,8 +24,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 class BankExtraction
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
     #[ORM\Column(type: 'uuid', unique: true)]
+    #[ApiProperty(identifier: true)]
     private ?Uuid $id;
 
     #[ORM\Column(length: 255)]
@@ -42,7 +43,7 @@ class BankExtraction
     private Budget $budget;
 
 
-    public function __construct()
+    public function __construct($id = null)
     {
         $this->id = $id ?? Uuid::v6();
     }
