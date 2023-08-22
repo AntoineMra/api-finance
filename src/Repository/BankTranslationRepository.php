@@ -45,7 +45,7 @@ class BankTranslationRepository extends ServiceEntityRepository
         $translation = $this
             ->createQueryBuilder('bt')
             ->select('bt')
-            ->where($expr->in('bt.bankLabel', ':label'))
+            ->where($expr->eq('bt.bank_label', ':label'))
             ->setParameter(':label', $label)
             ->getQuery()
             ->getSingleScalarResult()

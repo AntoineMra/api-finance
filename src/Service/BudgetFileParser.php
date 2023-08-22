@@ -65,8 +65,10 @@ class BudgetFileParser implements BudgetFileParserInterface
             $transaction->setBudget($budget);
 
             $formatedLabel = $this->formatLabel($record['Libellé']);
-            if($this->isMatchingTranslation($formatedLabel)) {
-                // TODO retrieve translation
+            $bankTranslation = $this->matchingTranslation($formatedLabel);
+            if($bankTranslation !== null) {
+                $transactions->setLabel($bankTranslation->getCustomLabel());
+                $transactions->setCategory($bankTranslation->getCategory());
             } else {
                 // TODO set is pending to true and else to null
             }
@@ -94,10 +96,10 @@ class BudgetFileParser implements BudgetFileParserInterface
         return implode(" ", $arrayWords);
     }
 
-    private function isMatchingTranslation(string $label): bool
+    private function matchingTranslation(string $label): ?BankTranslation
     {
         $bankTranslation = $this->bankTranslationRepository->isLabelTranslated($label);
 
-        return $bankTranslation !== null;
+        return $bankTranslation ?? null;
     }
 }

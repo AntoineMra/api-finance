@@ -62,6 +62,7 @@ class Transaction
     #[Groups(['transaction:read', 'category:read', 'domain:read', 'transaction:write'])]
     private TransactionType $type;
 
+    //TODO REFACTOR TO ENUM
     #[ORM\Column]
     #[Groups(['transaction:read', 'category:read', 'domain:read', 'transaction:write'])]
     private bool $isPending = false;
