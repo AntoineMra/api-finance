@@ -63,9 +63,10 @@ class Transaction
     private TransactionType $type;
 
     //TODO REFACTOR TO ENUM
-    #[ORM\Column]
+    #[ORM\Column(type: Types::STRING, length: 255, enumType: TransactionStatus::class)]
+    #[ApiProperty(example: 'Draft')]
     #[Groups(['transaction:read', 'category:read', 'domain:read', 'transaction:write'])]
-    private bool $isPending = false;
+    private TransactionStatus $status;
 
     #[ORM\ManyToOne(inversedBy: 'transactions')]
     #[ORM\JoinColumn(nullable: false)]
@@ -80,6 +81,7 @@ class Transaction
     public function __construct()
     {
         $this->id = $id ?? Uuid::v6();
+        $this->status = TransactionStatus::Draft;
     }
 
     public function getId(): ?Uuid
@@ -123,14 +125,14 @@ class Transaction
         return $this;
     }
     
-    public function isPending(): bool
+    public function getStatus(): TransactionStatus
     {
         return $this->isPending;
     }
 
-    public function setIsPending(?bool $isPending): self
+    public function setStatus(TransactionStatus $status): self
     {
-        $this->isPending = $isPending;
+        $this->status = $status;
 
         return $this;
     }

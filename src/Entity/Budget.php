@@ -163,6 +163,31 @@ class Budget
         return $this;
     }
 
+    #[Groups('budget:read')]
+    public function getTransactionsTotal(): int
+    {
+        $total = 0;
+        /** @var Transaction $transaction */
+        foreach ($this->transactions as $transaction) {
+            $total += $transaction->getAmount();
+        }
+
+        return $total;
+    }
+
+
+    #[Groups('budget:read')]
+    public function getTransactionsMedium(): int
+    {
+        $medium = 0;
+        /** @var Transaction $transaction */
+        foreach ($this->transactions as $transaction) {
+            $medium += $transaction->getAmount() / $this->transactions->count();
+        }
+
+        return $medium;
+    }
+
     /**
      * @return \DateTime
      */

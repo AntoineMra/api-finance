@@ -69,8 +69,7 @@ class BudgetFileParser implements BudgetFileParserInterface
             if($bankTranslation !== null) {
                 $transactions->setLabel($bankTranslation->getCustomLabel());
                 $transactions->setCategory($bankTranslation->getCategory());
-            } else {
-                // TODO set is pending to true and else to null
+                $transactions->setStatus(TransactionType::Validated);
             }
 
             $transactions[] = $transaction;

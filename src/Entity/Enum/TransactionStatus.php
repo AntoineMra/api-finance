@@ -2,7 +2,7 @@
 
 namespace App\Entity\Enum;
 
-enum BudgetStatus: string
+enum TransactionStatus: string
 {
     case Draft = 'draft';
     case Validated = 'validated';
