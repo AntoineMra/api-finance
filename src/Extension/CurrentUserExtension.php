@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Extension\CurrentUserExtension;
+namespace App\Extension;
 
 use Doctrine\ORM\QueryBuilder;
 use ApiPlatform\Metadata\Operation;
