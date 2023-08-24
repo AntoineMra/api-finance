@@ -30,6 +30,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
     ],
     denormalizationContext: ['groups' => ['transaction:write']]
 )]
+// TODO: Remove this when groups are implemented in budgets
 #[ApiResource(
     uriTemplate: '/budgets/{budgetId}/transactions',
     operations: [ new GetCollection() ],

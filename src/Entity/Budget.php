@@ -64,6 +64,7 @@ class Budget
     #[Groups(['budget:read', 'budget:put'])]
     private BudgetStatus $status;
 
+    //TODO: Add inherent view of transactions in budget
     #[ORM\OneToMany(mappedBy: 'budget', targetEntity: Transaction::class, orphanRemoval: true)]
     #[Groups(['budget:read', 'budget:put'])]
     private Collection $transactions;
@@ -174,6 +175,11 @@ class Budget
 
         return $total;
     }
+
+    //TODO : Add Somme transactions Crédit 
+    //TODO : Add Somme Transactions Débit
+    //TODO : Add Différence Crédit - Débit
+    //TODO : Add percent of diff
 
 
     #[Groups('budget:read')]
