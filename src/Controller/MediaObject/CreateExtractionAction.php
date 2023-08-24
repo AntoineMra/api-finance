@@ -6,6 +6,7 @@ use App\Entity\BankExtraction;
 use App\Service\BudgetFileParserInterface;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
 
 #[AsController]
 final class CreateExtractionAction extends AbstractController
@@ -14,9 +15,15 @@ final class CreateExtractionAction extends AbstractController
         private BudgetFileParserInterface $budgetFileParserInterface
     ) {}
 
-    public function __invoke(BankExtraction $bankExtraction): BankExtraction
+    public function __invoke(BankExtraction $bankExtraction): Response
     {
-        $this->budgetFileParserInterface->parse($bankExtraction);
-        return $bankExtraction;
+        $transactions = $this->budgetFileParserInterface->parse($bankExtraction);
+        //TODO: Possibly adapt the return with Front End constraints
+
+        return new JsonResponse([
+            'budget' => $bankExtraction->getBudget(),
+            'month' => $bankExtraction->getMonth(),
+            'transactions' => $transactions,
+        ]);
     }
 }
