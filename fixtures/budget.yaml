@@ -7,6 +7,5 @@ App\Entity\Budget:
 
     budget_6:
         title: 'Budget Juin'
-        date (unique):  '2023-06-15'
+        date (unique):  <date_create('2023-06-12')>
         status: <enum('App\Entity\Enum\BudgetStatus::Completed')>
-        transactions: ['@transaction_<current()>']

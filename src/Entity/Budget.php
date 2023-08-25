@@ -70,7 +70,7 @@ class Budget
     private Collection $transactions;
 
     #[ORM\OneToOne(targetEntity: BankExtraction::class)]
-    #[ORM\JoinColumn(nullable: true)]
+    #[ORM\JoinColumn(onDelete: 'SET NULL')]
     #[ApiProperty(types: ['https://schema.org/image'])]
     private ?BankExtraction $extraction = null;
 
