@@ -30,7 +30,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
     ],
     denormalizationContext: ['groups' => ['transaction:write']]
 )]
-// TODO: Remove this when groups are implemented in budgets
 #[ApiResource(
     uriTemplate: '/budgets/{budgetId}/transactions',
     operations: [ new GetCollection() ],
@@ -39,7 +38,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
     ],
     normalizationContext: ['groups' => ['transaction:read']]
 )]
-#[ApiFilter(SearchFilter::class, properties: ['label' => 'partial'])]
+#[ApiFilter(SearchFilter::class, properties: ['label' => 'partial', 'status' => 'exact'])]
 #[ApiFilter(OrderFilter::class, properties: ['amount'])]
 #[ApiFilter(MatchFilter::class, properties: ['type'])]
 class Transaction
@@ -47,28 +46,28 @@ class Transaction
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'uuid', unique: true)]
-    #[Groups('transaction:read')]
+    #[Groups('budget:read', 'transaction:read')]
     private ?Uuid $id;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['transaction:read', 'category:read', 'domain:read', 'transaction:write'])]
+    #[Groups(['budget:read', 'transaction:read', 'category:read', 'domain:read', 'transaction:write'])]
     private ?string $label = null;
 
     #[ORM\Column]
-    #[Groups(['transaction:read', 'category:read', 'domain:read', 'transaction:write'])]
+    #[Groups(['budget:read', 'transaction:read', 'category:read', 'domain:read', 'transaction:write'])]
     private float $amount;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['transaction:read', 'category:read', 'domain:read', 'transaction:write'])]
+    #[Groups(['budget:read', 'transaction:read', 'category:read', 'domain:read', 'transaction:write'])]
     private ?string $date = null;
 
     #[ORM\Column(length: 255,  enumType: TransactionType::class)]
-    #[Groups(['transaction:read', 'category:read', 'domain:read', 'transaction:write'])]
+    #[Groups(['budget:read', 'transaction:read', 'category:read', 'domain:read', 'transaction:write'])]
     private TransactionType $type;
 
     #[ORM\Column(type: Types::STRING, length: 255, enumType: TransactionStatus::class)]
     #[ApiProperty(example: 'Draft')]
-    #[Groups(['transaction:read', 'category:read', 'domain:read', 'transaction:write'])]
+    #[Groups(['budget:read', 'transaction:read', 'category:read', 'domain:read', 'transaction:write'])]
     private TransactionStatus $status;
 
     #[ORM\ManyToOne(inversedBy: 'transactions')]
@@ -78,7 +77,7 @@ class Transaction
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['transaction:read', 'transaction:write'])]
+    #[Groups(['budget:read', 'transaction:read', 'transaction:write'])]
     private ?Category $category = null;
 
     public function __construct()
