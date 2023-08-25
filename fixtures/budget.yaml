@@ -4,3 +4,9 @@ App\Entity\Budget:
         date (unique):  <dateTimeBetween('-20 year', 'now')>
         status: <enum('App\Entity\Enum\BudgetStatus::Draft')>
         transactions: ['@transaction_<current()>']
+
+    budget_6:
+        title: 'Budget Juin'
+        date (unique):  '2023-06-15'
+        status: <enum('App\Entity\Enum\BudgetStatus::Completed')>
+        transactions: ['@transaction_<current()>']

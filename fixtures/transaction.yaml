@@ -8,3 +8,7 @@ App\Entity\Transaction:
 
     transaction_{1..10} (extends transaction):
         category: '@category_<randomDigitNotNull()>'
+
+    transaction_{11..20} (extends transaction):
+        budget: '@budget_6'
+        category: '@category_<randomDigitNotNull()>'
