@@ -11,6 +11,7 @@ use ApiPlatform\Metadata\Delete;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Enum\BudgetStatus;
 use ApiPlatform\Metadata\ApiFilter;
+use App\Entity\Enum\TransactionType;
 use App\Repository\BudgetRepository;
 use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
@@ -161,18 +162,6 @@ class Budget
         }
 
         return $this;
-    }
-
-    #[Groups('budget:read')]
-    public function getTransactionsTotal(): int
-    {
-        $total = 0;
-        /** @var Transaction $transaction */
-        foreach ($this->transactions as $transaction) {
-            $total += $transaction->getAmount();
-        }
-
-        return $total;
     }
 
     #[Groups('budget:read')]
