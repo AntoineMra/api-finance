@@ -32,7 +32,7 @@ class Category
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'uuid', unique: true)]
-    #[Groups('transaction:read')]
+    #[Groups('transaction:read', 'category:read')]
     private ?Uuid $id;
 
     #[ORM\Column(length: 255)]
