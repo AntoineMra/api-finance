@@ -44,7 +44,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Budget
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
     #[ORM\Column(type: 'uuid', unique: true)]
     #[Groups('budget:read')]
     private ?Uuid $id;
