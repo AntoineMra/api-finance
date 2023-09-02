@@ -22,6 +22,7 @@ use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
 use App\Validator\Constraints\UniqueMonthBudget;
 use Doctrine\Common\Collections\ArrayCollection;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use Gedmo\Mapping\Annotation\Blameable;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -73,12 +74,15 @@ class Budget
     #[ApiProperty(types: ['https://schema.org/image'])]
     private ?BankExtraction $extraction = null;
 
-    /**
-     * @Timestampable(on="create")
-     */
     #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Timestampable(on: 'create')]
     #[Groups('budget:read')]
     private \DateTime $createdAt;
+
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[Blameable(on: 'create')]
+    #[Groups('budget:read')]
+    private ?User $createdBy;
 
     public function __construct()
     {
@@ -234,5 +238,10 @@ class Budget
         $this->extraction = $extraction;
 
         return $this;
+    }
+
+    public function getCreatedBy()
+    {
+        return $this->createdBy;
     }
 }
