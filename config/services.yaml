@@ -26,7 +26,12 @@ services:
         
     App\OpenApi\WhoAmiDecorator:
         decorates: "api_platform.openapi.factory"
-        arguments: ["@.inner"]    
+        arguments: ["@.inner"]
+
+    App\Serializer\UserContextBuilder:
+        decorates: 'api_platform.serializer.context_builder'
+        arguments: [ '@App\Serializer\UserContextBuilder.inner' ]
+        autoconfigure: false 
 
     App\DataFixtures\Provider\HashPasswordProvider:
         tags: [ { name: nelmio_alice.faker.provider } ]
