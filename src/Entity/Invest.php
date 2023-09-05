@@ -14,6 +14,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\Uuid;
+use Gedmo\Mapping\Annotation\Blameable;
 
 #[ORM\Entity(repositoryClass: InvestRepository::class)]
 #[ApiResource(
@@ -64,6 +65,11 @@ class Invest
     #[ORM\ManyToMany(targetEntity: Goal::class, mappedBy: 'investments')]
     #[Groups(['invest:read', 'invest:post', 'invest:put'])]
     private Collection $goals;
+
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[Blameable(on: 'create')]
+    #[Groups('budget:read')]
+    private ?User $createdBy;
 
     public function __construct(?Uuid $id = null)
     {
@@ -173,5 +179,10 @@ class Invest
         }
 
         return $this;
+    }
+
+    public function getCreatedBy()
+    {
+        return $this->createdBy;
     }
 }

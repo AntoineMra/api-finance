@@ -17,6 +17,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation\Timestampable;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\Uuid;
+use Gedmo\Mapping\Annotation\Blameable;
 
 #[ORM\Entity(repositoryClass: GoalRepository::class)]
 #[ApiResource(
@@ -67,6 +68,11 @@ class Goal
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     #[Groups('goal:read')]
     private \DateTime $createdAt;
+
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[Blameable(on: 'create')]
+    #[Groups('budget:read')]
+    private ?User $createdBy;
 
     public function __construct()
     {
@@ -153,5 +159,10 @@ class Goal
     public function setStatus(?GoalStatus $status): void
     {
         $this->status = $status;
+    }
+
+    public function getCreatedBy()
+    {
+        return $this->createdBy;
     }
 }

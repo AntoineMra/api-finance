@@ -7,6 +7,7 @@ use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Put;
+use Gedmo\Mapping\Annotation\Blameable;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -36,6 +37,11 @@ class BankTranslation
     #[ORM\ManyToOne(targetEntity: Category::class)]
     #[ORM\JoinColumn(nullable: false)]
     private ?Category $category = null;
+
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[Blameable(on: 'create')]
+    #[Groups('budget:read')]
+    private ?User $createdBy;
 
     public function __construct()
     {
@@ -81,5 +87,10 @@ class BankTranslation
         $this->bankLabel = $bankLabel;
 
         return $this;
+    }
+
+    public function getCreatedBy()
+    {
+        return $this->createdBy;
     }
 }

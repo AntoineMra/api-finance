@@ -8,6 +8,7 @@ use Symfony\Component\Uid\Uuid;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
+use Gedmo\Mapping\Annotation\Blameable;
 use App\Controller\MediaObject\CreateExtractionAction;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -42,6 +43,10 @@ class BankExtraction
     #[Assert\NotNull(groups: ['extraction:create'])]
     private Budget $budget;
 
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[Blameable(on: 'create')]
+    #[Groups('budget:read')]
+    private ?User $createdBy;
 
     public function __construct($id = null)
     {
@@ -86,5 +91,10 @@ class BankExtraction
         $this->budget = $budget;
 
         return $this;
+    }
+
+    public function getCreatedBy()
+    {
+        return $this->createdBy;
     }
 }

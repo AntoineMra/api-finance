@@ -14,6 +14,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\Uuid;
+use Gedmo\Mapping\Annotation\Blameable;
 
 #[ORM\Entity(repositoryClass: DomainRepository::class)]
 #[ApiResource(
@@ -42,6 +43,11 @@ class Domain
     #[ORM\OneToMany(mappedBy: 'domain', targetEntity: Category::class, orphanRemoval: true)]
     #[Groups(['domain:read', 'domain:write'])]
     private Collection $categories;
+
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[Blameable(on: 'create')]
+    #[Groups('budget:read')]
+    private ?User $createdBy;
 
     public function __construct()
     {
@@ -119,5 +125,10 @@ class Domain
         }
 
         return $medium;
+    }
+
+    public function getCreatedBy()
+    {
+        return $this->createdBy;
     }
 }

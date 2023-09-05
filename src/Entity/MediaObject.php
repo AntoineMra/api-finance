@@ -15,6 +15,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 use Symfony\Component\Validator\Constraints as Assert;
 use App\Controller\MediaObject\CreateMediaObjectAction;
+use Gedmo\Mapping\Annotation\Blameable;
 
 
 #[Vich\Uploadable]
@@ -65,6 +66,7 @@ class MediaObject
     public ?File $file = null;
 
     #[ORM\Column(nullable: true)]
+    #[Groups(['media_object:read'])]
     public ?string $filePath = null;
 
     #[ORM\OneToOne(targetEntity: BankExtraction::class)]
@@ -72,6 +74,11 @@ class MediaObject
     #[ApiProperty(types: ['https://schema.org/image'])]
     #[Groups(['media_object:read'])]
     public ?BankExtraction $extraction = null;
+
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[Blameable(on: 'create')]
+    #[Groups('budget:read')]
+    private ?User $createdBy;
     
     public function __construct($id = null)
     {
@@ -81,5 +88,10 @@ class MediaObject
     public function getId(): ?Uuid
     {
         return $this->id;
+    }
+    
+    public function getCreatedBy()
+    {
+        return $this->createdBy;
     }
 }

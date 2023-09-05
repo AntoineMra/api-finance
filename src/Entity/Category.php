@@ -14,6 +14,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\Uuid;
+use Gedmo\Mapping\Annotation\Blameable;
 
 #[ORM\Entity(repositoryClass: CategoryRepository::class)]
 #[ApiResource(
@@ -47,6 +48,11 @@ class Category
     #[ORM\OneToMany(mappedBy: 'category', targetEntity: Transaction::class, orphanRemoval: false)]
     #[Groups(['category:read', 'domain:read'])]
     private Collection $transactions;
+
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[Blameable(on: 'create')]
+    #[Groups('budget:read')]
+    private ?User $createdBy;
 
     public function __construct()
     {
@@ -116,5 +122,10 @@ class Category
     public function setTransactions(Collection $transactions): void
     {
         $this->transactions = $transactions;
+    }
+
+    public function getCreatedBy()
+    {
+        return $this->createdBy;
     }
 }
