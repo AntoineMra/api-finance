@@ -17,15 +17,22 @@ class CurrentUserExtension implements QueryCollectionExtensionInterface, QueryIt
 
     public function applyToCollection(QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, string $resourceClass, Operation $operation = null, array $context = []): void
     {
-        $user = $this->security->getUser();
-        // Needs implementation of createdBy on all entities
-        // HERE I must check if createdBy and current user match => to be used by all entities
+        $this->addWhere($queryBuilder, $resourceClass);
     }
 
     public function applyToItem(QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, string $resourceClass,array $identifiers, Operation $operation = null, array $context = []): void
     {
-        $user = $this->security->getUser();
-        // Needs implementation of createdBy on all entities
-        // HERE I must check if createdBy and current user match => to be used by all entities
+        $this->addWhere($queryBuilder, $resourceClass);
+    }
+
+    private function addWhere(QueryBuilder $queryBuilder, string $resourceClass): void
+    {
+        if ( null === $user = $this->security->getUser()) {
+            return;
+        }
+
+        $rootAlias = $queryBuilder->getRootAliases()[0];
+        $queryBuilder->andWhere(sprintf('%s.user = :current_user', $rootAlias));
+        $queryBuilder->setParameter('current_user', $user->getId());
     }
 }
