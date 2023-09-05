@@ -54,9 +54,16 @@ cc: sf
 
 ## —— Fixtures ——————————————————————————————————————————————————————————————
 fxt: ## Run fixtures hautelook generation
-	@$(SYMFONY) hautelook:fixtures:load
+	@$(SYMFONY) hautelook:fixtures:load --no-interaction
 
 ## —— Database Migration ——————————————————————————————————————————————————————————————
 db: ## Run fixtures hautelook generation
 	@$(SYMFONY) make:migration
 	@$(SYMFONY) doctrine:migrations:migrate
+
+## —— Reset Database ——————————————————————————————————————————————————————————————
+reset-db: ## Run database drop & creation
+	@$(SYMFONY) doctrine:database:drop --force
+	@$(SYMFONY) doctrine:database:create
+	@$(SYMFONY) doctrine:schema:create
+	@$(SYMFONY) hautelook:fixtures:load --no-interaction

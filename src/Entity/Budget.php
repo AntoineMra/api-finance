@@ -244,4 +244,11 @@ class Budget
     {
         return $this->createdBy;
     }
+
+    public function setCreatedBy($createdBy)
+    {
+        $this->createdBy = $createdBy;
+
+        return $this;
+    }
 }
