@@ -88,7 +88,7 @@ class Budget
     {
         $this->id = $id ?? Uuid::v6();
         $this->transactions = new ArrayCollection();
-        $this->status = BudgetStatus::ToBeDone;
+        $this->status = BudgetStatus::Draft;
     }
 
     public function getId(): Uuid
