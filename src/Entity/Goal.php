@@ -24,15 +24,15 @@ use Gedmo\Mapping\Annotation\Blameable;
     operations: [
         new Get(),
         new Put(
-            denormalizationContext: ['groups' => ['invest:put']],
+            denormalizationContext: ['groups' => ['goal:put']],
         ),
         new Delete(),
         new GetCollection(),
         new Post(
-            denormalizationContext: ['groups' => ['invest:post']],
+            denormalizationContext: ['groups' => ['goal:post']],
         ),
     ],
-    normalizationContext: ['groups' => ['invest:read']],
+    normalizationContext: ['groups' => ['goal:read']],
 )]
 class Goal
 {
@@ -71,7 +71,7 @@ class Goal
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[Blameable(on: 'create')]
-    #[Groups('budget:read')]
+    #[Groups('goal:read')]
     private ?User $createdBy;
 
     public function __construct()

@@ -68,7 +68,7 @@ class Invest
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[Blameable(on: 'create')]
-    #[Groups('budget:read')]
+    #[Groups('invest:read')]
     private ?User $createdBy;
 
     public function __construct(?Uuid $id = null)

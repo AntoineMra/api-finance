@@ -77,7 +77,7 @@ class Transaction
     private ?Budget $budget = null;
 
     #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     #[Groups(['budget:read', 'transaction:read', 'transaction:write'])]
     private ?Category $category = null;
 
@@ -184,5 +184,12 @@ class Transaction
     public function getCreatedBy()
     {
         return $this->createdBy;
+    }
+
+    public function setCreatedBy($createdBy)
+    {
+        $this->createdBy = $createdBy;
+
+        return $this;
     }
 }

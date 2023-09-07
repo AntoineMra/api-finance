@@ -33,7 +33,7 @@ class Domain
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'uuid', unique: true)]
-    #[Groups('transaction:read')]
+    #[Groups('transaction:read', 'domain:read')]
     private ?Uuid $id;
 
     #[ORM\Column(length: 255)]
@@ -46,7 +46,7 @@ class Domain
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[Blameable(on: 'create')]
-    #[Groups('budget:read')]
+    #[Groups('domain:read')]
     private ?User $createdBy;
 
     public function __construct()
@@ -130,5 +130,12 @@ class Domain
     public function getCreatedBy()
     {
         return $this->createdBy;
+    }
+
+    public function setCreatedBy($createdBy)
+    {
+        $this->createdBy = $createdBy;
+
+        return $this;
     }
 }

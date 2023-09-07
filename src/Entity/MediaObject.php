@@ -77,7 +77,7 @@ class MediaObject
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[Blameable(on: 'create')]
-    #[Groups('budget:read')]
+    #[Groups('media_object:read')]
     private ?User $createdBy;
     
     public function __construct($id = null)

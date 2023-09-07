@@ -22,7 +22,7 @@ use Gedmo\Mapping\Annotation\Blameable;
         new Get(),
         new Put(),
         new Delete(),
-        new GetCollection(),
+        new GetCollection(normalizationContext: ['groups' => ['category:read']]),
         new Post(),
     ],
     normalizationContext: ['groups' => ['category:read']],
@@ -33,7 +33,7 @@ class Category
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'uuid', unique: true)]
-    #[Groups('transaction:read', 'category:read')]
+    #[Groups('category:read')]
     private ?Uuid $id;
 
     #[ORM\Column(length: 255)]
@@ -51,7 +51,7 @@ class Category
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[Blameable(on: 'create')]
-    #[Groups('budget:read')]
+    #[Groups('category:read')]
     private ?User $createdBy;
 
     public function __construct()
@@ -127,5 +127,12 @@ class Category
     public function getCreatedBy()
     {
         return $this->createdBy;
+    }
+
+    public function setCreatedBy($createdBy)
+    {
+        $this->createdBy = $createdBy;
+
+        return $this;
     }
 }

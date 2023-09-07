@@ -40,7 +40,6 @@ class BankTranslation
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[Blameable(on: 'create')]
-    #[Groups('budget:read')]
     private ?User $createdBy;
 
     public function __construct()
