@@ -31,10 +31,6 @@ class BankExtraction
     #[ApiProperty(identifier: true)]
     private ?Uuid $id;
 
-    #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
-    #[Assert\NotNull(groups: ['extraction:create'])]
-    private ?string $month = null;
-
     #[ORM\OneToOne(targetEntity: MediaObject::class)]
     #[ORM\JoinColumn(nullable: false)]
     #[Assert\NotNull(groups: ['extraction:create'])]
@@ -57,17 +53,6 @@ class BankExtraction
     public function getId(): ?Uuid
     {
         return $this->id = $id ?? Uuid::v6();
-    }
-
-    public function getMonth(): ?string
-    {
-        return $this->month;
-    }
-
-    public function setMonth(string $month): self
-    {
-        $this->month = $month;
-        return $this;
     }
 
     public function getMediaObject()

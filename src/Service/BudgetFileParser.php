@@ -33,7 +33,7 @@ class BudgetFileParser implements BudgetFileParserInterface
     public function parse(BankExtraction $bankExtraction): array
     {
 
-        if ($bankExtraction->getMediaObject() === null) {
+        if ($bankExtraction?->getMediaObject() === null) {
             throw new \LogicException("The file is missing");
         }
 

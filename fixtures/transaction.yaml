@@ -4,6 +4,7 @@ App\Entity\Transaction:
         amount: <randomNumber(2, false)>
         date: <date()>
         type: <randomEnum('App\Entity\Enum\TransactionType')>
+        status: <randomEnum('App\Entity\Enum\TransactionStatus')>
         budget: '@budget_1'
 
     transaction_{1..10} (extends transaction):

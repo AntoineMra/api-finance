@@ -24,7 +24,6 @@ final class CreateExtractionAction extends AbstractController
 
         return new JsonResponse([
             'budget' => $bankExtraction->getBudget(),
-            'month' => $bankExtraction->getMonth(),
             'draftTransactions' => $draftObject,
             'validatedTransactions' => $validatedTransactions,
         ]);

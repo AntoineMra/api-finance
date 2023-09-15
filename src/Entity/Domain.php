@@ -59,6 +59,7 @@ class Domain
     {
         $this->id = $id ?? Uuid::v6();
         $this->categories = new ArrayCollection();
+        $this->color = '#FFFFFF';
     }
 
     public function getId(): Uuid
