@@ -71,6 +71,11 @@ class Transaction
     #[Groups(['budget:read', 'transaction:read', 'category:read', 'domain:read', 'transaction:write'])]
     private TransactionStatus $status;
 
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
+    #[ApiProperty(example: 'Transaction en attente de remboursement')]
+    #[Groups(['budget:read', 'transaction:read', 'category:read', 'domain:read', 'transaction:write'])]
+    private ?string $comment = null;
+
     #[ORM\ManyToOne(inversedBy: 'transactions')]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups('transaction:write')]
@@ -132,7 +137,7 @@ class Transaction
 
         return $this;
     }
-    
+
     public function getStatus(): TransactionStatus
     {
         return $this->status;
@@ -180,8 +185,8 @@ class Transaction
 
         return $this;
     }
-    
-    public function getCreatedBy()
+
+    public function getCreatedBy(): ?User
     {
         return $this->createdBy;
     }

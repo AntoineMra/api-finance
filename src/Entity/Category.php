@@ -124,7 +124,7 @@ class Category
         $this->transactions = $transactions;
     }
 
-    public function getCreatedBy()
+    public function getCreatedBy(): ?User
     {
         return $this->createdBy;
     }

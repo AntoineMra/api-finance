@@ -21,23 +21,20 @@ use Gedmo\Mapping\Annotation\Blameable;
 #[Vich\Uploadable]
 #[ORM\Entity]
 #[ApiResource(
-    normalizationContext: ['groups' => ['media_object:read']], 
     types: ['https://schema.org/MediaObject'],
     operations: [
         new Get(),
         new Post(
-            controller: CreateMediaObjectAction::class, 
-            deserialize: false, 
-            validationContext: ['groups' => ['Default', 'media_object_create']], 
+            controller: CreateMediaObjectAction::class,
             openapi: new Model\Operation(
                 requestBody: new Model\RequestBody(
                     content: new \ArrayObject([
                         'multipart/form-data' => [
                             'schema' => [
-                                'type' => 'object', 
+                                'type' => 'object',
                                 'properties' => [
                                     'file' => [
-                                        'type' => 'string', 
+                                        'type' => 'string',
                                         'format' => 'binary'
                                     ]
                                 ]
@@ -45,9 +42,12 @@ use Gedmo\Mapping\Annotation\Blameable;
                         ]
                     ])
                 )
-            )
+            ),
+            validationContext: ['groups' => ['Default', 'media_object_create']],
+            deserialize: false
         )
-    ]
+    ],
+    normalizationContext: ['groups' => ['media_object:read']]
 )]
 class MediaObject
 {
@@ -79,18 +79,18 @@ class MediaObject
     #[Blameable(on: 'create')]
     #[Groups('media_object:read')]
     private ?User $createdBy;
-    
+
     public function __construct($id = null)
     {
         $this->id = $id ?? Uuid::v6();
     }
-    
+
     public function getId(): ?Uuid
     {
         return $this->id;
     }
-    
-    public function getCreatedBy()
+
+    public function getCreatedBy(): ?User
     {
         return $this->createdBy;
     }

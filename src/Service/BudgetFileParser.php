@@ -3,12 +3,14 @@
 namespace App\Service;
 
 use App\Entity\Budget;
+use League\Csv\Exception;
 use League\Csv\Reader;
 use App\Entity\Transaction;
 use App\Entity\BankExtraction;
 use App\Entity\BankTranslation;
 use League\Csv\CharsetConverter;
 use App\Entity\Enum\TransactionType;
+use League\Csv\UnavailableStream;
 use Symfony\Component\Finder\Finder;
 use App\Entity\Enum\TransactionStatus;
 use App\Repository\BankTranslationRepository;
@@ -22,11 +24,12 @@ class BudgetFileParser implements BudgetFileParserInterface
     }
 
     /**
-     * This function iams to parse a bank extraction csv file to import transactions | Warning this only Works with Credit Mutuel formated files
+     * This function aims to parse a bank extraction csv file to import transactions | Warning this only Works with Credit Mutuel formated files
+     * @throws UnavailableStream
+     * @throws Exception
      */
     public function parse(BankExtraction $bankExtraction): array
     {
-        $transactions = [];
 
         if ($bankExtraction->getMediaObject() === null) {
             throw new \LogicException("The file is missing");
@@ -44,14 +47,15 @@ class BudgetFileParser implements BudgetFileParserInterface
             ;
             $csv->includeInputBOM();
             CharsetConverter::addBOMSkippingTo($csv);
-            $this->getTranslatedTransactions($csv, $bankExtraction->getBudget());
+            return $this->getTranslatedTransactions($csv, $bankExtraction->getBudget());
         }
 
-
-
-        return $transactions;
+        throw new \LogicException("The file is missing");
     }
 
+    /**
+     * @throws Exception
+     */
     private function getTranslatedTransactions(Reader $csv, Budget $budget): array
     {
         $transactions = [];
@@ -85,7 +89,7 @@ class BudgetFileParser implements BudgetFileParserInterface
         return $transactions;
     }
 
-    private function formatLabel(string $label): string 
+    private function formatLabel(string $label): string
     {
         $arrayWords = explode(" ", $label);
 

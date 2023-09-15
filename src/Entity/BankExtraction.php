@@ -18,7 +18,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Post(
             uriTemplate: '/budgets/extraction',
             controller: CreateExtractionAction::class,
-            validationContext: ['groups' => ['Default', 'extraction:create']], 
+            validationContext: ['groups' => ['Default', 'extraction:create']],
         ),
     ],
 )]
@@ -92,7 +92,7 @@ class BankExtraction
         return $this;
     }
 
-    public function getCreatedBy()
+    public function getCreatedBy(): ?User
     {
         return $this->createdBy;
     }

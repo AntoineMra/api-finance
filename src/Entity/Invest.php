@@ -181,7 +181,7 @@ class Invest
         return $this;
     }
 
-    public function getCreatedBy()
+    public function getCreatedBy(): ?User
     {
         return $this->createdBy;
     }
