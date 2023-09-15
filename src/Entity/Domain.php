@@ -15,6 +15,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\Uuid;
 use Gedmo\Mapping\Annotation\Blameable;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: DomainRepository::class)]
 #[ApiResource(
@@ -33,7 +34,7 @@ class Domain
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'uuid', unique: true)]
-    #[Groups('transaction:read', 'domain:read')]
+    #[Groups(['transaction:read', 'domain:read'])]
     private ?Uuid $id;
 
     #[ORM\Column(length: 255)]
@@ -43,6 +44,11 @@ class Domain
     #[ORM\OneToMany(mappedBy: 'domain', targetEntity: Category::class, orphanRemoval: true)]
     #[Groups(['domain:read', 'domain:write'])]
     private Collection $categories;
+
+    #[ORM\Column(length: 255, nullable: false)]
+    #[Groups(['transaction:read', 'category:read', 'domain:read', 'domain:write'])]
+    #[Assert\Regex(pattern: '/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/', message: 'The color must be a valid hex color')]
+    private string $color;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[Blameable(on: 'create')]
@@ -70,6 +76,16 @@ class Domain
         $this->label = $label;
 
         return $this;
+    }
+
+    public function getColor(): ?string
+    {
+        return $this->color;
+    }
+
+    public function setColor(?string $color): void
+    {
+        $this->color = $color;
     }
 
     /**

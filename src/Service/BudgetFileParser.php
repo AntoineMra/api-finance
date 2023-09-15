@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Entity\Budget;
+use Doctrine\ORM\EntityManagerInterface;
 use League\Csv\Exception;
 use League\Csv\Reader;
 use App\Entity\Transaction;
@@ -20,6 +21,7 @@ class BudgetFileParser implements BudgetFileParserInterface
 {
     public function __construct(
         private readonly BankTranslationRepository $bankTranslationRepository,
+        private readonly EntityManagerInterface $entityManager
     ) {
     }
 
@@ -58,7 +60,8 @@ class BudgetFileParser implements BudgetFileParserInterface
      */
     private function getTranslatedTransactions(Reader $csv, Budget $budget): array
     {
-        $transactions = [];
+        $validatedTransactions = [];
+        $draftObject = [];
         $records = $csv->getRecords();
 
         foreach ($records as $record) {
@@ -77,16 +80,26 @@ class BudgetFileParser implements BudgetFileParserInterface
 
             $formatedLabel = $this->formatLabel($record['Libell?']);
             $bankTranslation = $this->matchingTranslation($formatedLabel);
-            if($bankTranslation !== null) {
+            if ($bankTranslation !== null) {
                 $transaction->setLabel($bankTranslation->getCustomLabel());
                 $transaction->setCategory($bankTranslation->getCategory());
                 $transaction->setStatus(TransactionStatus::Validated);
+
+                $validatedTransactions[] = $transaction;
+            } else {
+                $draftObject[] = [
+                    'translation' => $this->createTranslation($formatedLabel),
+                    'transaction' => $transaction
+                ];
             }
 
-            $transactions[] = $transaction;
+
         }
 
-        return $transactions;
+        return [
+            'validatedTransactions' => $validatedTransactions,
+            'draftObject' => $draftObject
+        ];
     }
 
     private function formatLabel(string $label): string
@@ -111,5 +124,17 @@ class BudgetFileParser implements BudgetFileParserInterface
         $bankTranslation = $this->bankTranslationRepository->isLabelTranslated($label);
 
         return $bankTranslation ?? null;
+    }
+
+    private function createTranslation(string $label): BankTranslation
+    {
+        $bankTranslation = new BankTranslation();
+        $bankTranslation->setBankLabel($label);
+        $bankTranslation->setStatus(TransactionStatus::Draft);
+
+        $this->entityManager->persist($bankTranslation);
+        $this->entityManager->flush();
+
+        return $bankTranslation;
     }
 }

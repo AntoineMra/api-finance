@@ -18,13 +18,15 @@ final class CreateExtractionAction extends AbstractController
 
     public function __invoke(BankExtraction $bankExtraction): JsonResponse
     {
-        $transactions = $this->budgetFileParserInterface->parse($bankExtraction);
-        //TODO: Possibly adapt the return with Front End constraints
+        $parsingResponse = $this->budgetFileParserInterface->parse($bankExtraction);
+        $draftObject = $parsingResponse['draftObject'];
+        $validatedTransactions = $parsingResponse['validatedTransactions'];
 
         return new JsonResponse([
             'budget' => $bankExtraction->getBudget(),
             'month' => $bankExtraction->getMonth(),
-            'transactions' => $transactions,
+            'draftTransactions' => $draftObject,
+            'validatedTransactions' => $validatedTransactions,
         ]);
     }
 }

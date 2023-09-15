@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Entity\MediaObject;
 use ApiPlatform\Metadata\Post;
+use App\Repository\BankExtractionRepository;
+use Doctrine\DBAL\Types\Types;
 use Symfony\Component\Uid\Uuid;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Metadata\ApiProperty;
@@ -29,7 +31,7 @@ class BankExtraction
     #[ApiProperty(identifier: true)]
     private ?Uuid $id;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
     #[Assert\NotNull(groups: ['extraction:create'])]
     private ?string $month = null;
 

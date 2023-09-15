@@ -47,7 +47,7 @@ class Transaction
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'uuid', unique: true)]
-    #[Groups('budget:read', 'transaction:read')]
+    #[Groups(['budget:read', 'transaction:read'])]
     private ?Uuid $id;
 
     #[ORM\Column(length: 255)]
