@@ -16,8 +16,9 @@ final class CreateExtractionAction extends AbstractController
         private readonly BudgetFileParserInterface $budgetFileParserInterface
     ) {}
 
-    public function __invoke(BankExtraction $bankExtraction): JsonResponse
+    public function __invoke(BankExtraction $data): JsonResponse
     {
+        dd($data);
         $parsingResponse = $this->budgetFileParserInterface->parse($bankExtraction);
         $draftObject = $parsingResponse['draftObject'];
         $validatedTransactions = $parsingResponse['validatedTransactions'];
