@@ -39,7 +39,7 @@ class BankTranslationRepository extends ServiceEntityRepository
         }
     }
 
-    public function isLabelTranslated(string $label): ?BankTranslation
+    public function isLabelParsed(string $label, string $status): ?BankTranslation
     {
         $expr = $this->_em->getExpressionBuilder();
         $translation = $this
@@ -47,6 +47,8 @@ class BankTranslationRepository extends ServiceEntityRepository
             ->select('bt')
             ->where($expr->eq('bt.bankLabel', ':label'))
             ->setParameter(':label', $label)
+            ->andWhere($expr->eq('bt.status', ':status'))
+            ->setParameter(':status', $status)
             ->getQuery()
             ->getOneOrNullResult()
         ;
