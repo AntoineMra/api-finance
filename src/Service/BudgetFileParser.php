@@ -128,6 +128,9 @@ class BudgetFileParser implements BudgetFileParserInterface
 
     private function createTranslation(string $label): BankTranslation
     {
+        if (hasMatchingTranslation($label)) {
+            return $this->draftedTranslation($label);
+        }
         $bankTranslation = new BankTranslation();
         $bankTranslation->setBankLabel($label);
         $bankTranslation->setStatus(TransactionStatus::Draft);

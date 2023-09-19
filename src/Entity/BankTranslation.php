@@ -31,7 +31,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 class BankTranslation
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
     #[ORM\Column(type: 'uuid', unique: true)]
     #[Groups(['bankTranslation:read'])]
     private ?Uuid $id;
@@ -45,7 +44,7 @@ class BankTranslation
     private ?string $customLabel = null;
 
     #[ORM\ManyToOne(targetEntity: Category::class)]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     #[Groups(['bankTranslation:read', 'bankTranslation:put'])]
     private ?Category $category = null;
 
