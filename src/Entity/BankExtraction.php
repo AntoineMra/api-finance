@@ -24,6 +24,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
         ),
     ],
     denormalizationContext: ['groups' => ['extraction:create']],
+    normalizationContext: ['groups' => ['extraction:read']]
 )]
 class BankExtraction
 {
