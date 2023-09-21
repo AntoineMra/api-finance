@@ -3,8 +3,9 @@
 namespace App\Repository;
 
 use App\Entity\BankTranslation;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use App\Entity\Enum\TransactionStatus;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @extends ServiceEntityRepository<BankTranslation>
@@ -39,7 +40,7 @@ class BankTranslationRepository extends ServiceEntityRepository
         }
     }
 
-    public function isLabelTranslated(string $label): ?BankTranslation
+    public function isLabelParsed(string $label, TransactionStatus $status): ?BankTranslation
     {
         $expr = $this->_em->getExpressionBuilder();
         $translation = $this
@@ -47,6 +48,8 @@ class BankTranslationRepository extends ServiceEntityRepository
             ->select('bt')
             ->where($expr->eq('bt.bankLabel', ':label'))
             ->setParameter(':label', $label)
+            ->andWhere($expr->eq('bt.status', ':status'))
+            ->setParameter(':status', $status->value)
             ->getQuery()
             ->getOneOrNullResult()
         ;

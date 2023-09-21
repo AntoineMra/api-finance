@@ -33,7 +33,7 @@ class BudgetFileParser implements BudgetFileParserInterface
     public function parse(BankExtraction $bankExtraction): array
     {
 
-        if ($bankExtraction->getMediaObject() === null) {
+        if ($bankExtraction?->getMediaObject() === null) {
             throw new \LogicException("The file is missing");
         }
 
@@ -107,13 +107,13 @@ class BudgetFileParser implements BudgetFileParserInterface
         $arrayWords = explode(" ", $label);
 
         if($arrayWords[0] === "PAIEMENT") {
-            array_slice($arrayWords, 3);
+            $arrayWords = array_slice($arrayWords, 3);
         }
         if($arrayWords[0] === "VIR") {
-            array_shift($arrayWords);
+            $arrayWords = array_slice($arrayWords, 1);
         }
         if(end($arrayWords) === "Carte") {
-            array_slice($arrayWords, -2);
+            $arrayWords = array_slice($arrayWords, -2);
         }
 
         return implode(" ", $arrayWords);
@@ -121,13 +121,19 @@ class BudgetFileParser implements BudgetFileParserInterface
 
     private function matchingTranslation(string $label): ?BankTranslation
     {
-        $bankTranslation = $this->bankTranslationRepository->isLabelTranslated($label);
+        $bankTranslation = $this->bankTranslationRepository->isLabelParsed($label, TransactionStatus::Validated);
 
         return $bankTranslation ?? null;
     }
 
     private function createTranslation(string $label): BankTranslation
     {
+        $isLabelParsed = $this->bankTranslationRepository->isLabelParsed($label, TransactionStatus::Draft);
+        
+        if ($isLabelParsed !== null) {
+            return $isLabelParsed;
+        }
+
         $bankTranslation = new BankTranslation();
         $bankTranslation->setBankLabel($label);
         $bankTranslation->setStatus(TransactionStatus::Draft);

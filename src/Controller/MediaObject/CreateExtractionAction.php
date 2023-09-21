@@ -4,10 +4,11 @@ namespace App\Controller\MediaObject;
 
 use App\Entity\BankExtraction;
 use App\Service\BudgetFileParserInterface;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
 
 #[AsController]
 final class CreateExtractionAction extends AbstractController
@@ -16,17 +17,16 @@ final class CreateExtractionAction extends AbstractController
         private readonly BudgetFileParserInterface $budgetFileParserInterface
     ) {}
 
-    public function __invoke(BankExtraction $bankExtraction): JsonResponse
+    public function __invoke(BankExtraction $bankExtraction, SerializerInterface $serializer): JsonResponse
     {
         $parsingResponse = $this->budgetFileParserInterface->parse($bankExtraction);
         $draftObject = $parsingResponse['draftObject'];
         $validatedTransactions = $parsingResponse['validatedTransactions'];
 
-        return new JsonResponse([
-            'budget' => $bankExtraction->getBudget(),
-            'month' => $bankExtraction->getMonth(),
-            'draftTransactions' => $draftObject,
-            'validatedTransactions' => $validatedTransactions,
-        ]);
+    return new JsonResponse($serializer->serialize([
+        'budget' => $bankExtraction->getBudget(),
+        'draftTransactions' => $draftObject,
+        'validatedTransactions' => $validatedTransactions,
+        ], 'json'), json: true);
     }
 }
