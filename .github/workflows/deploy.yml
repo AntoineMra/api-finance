@@ -20,4 +20,4 @@ jobs:
               APP_SECRET=${{ secrets.APP }} \
               CADDY_MERCURE_JWT_SECRET=${{ secrets.CADDY }} \
               docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
-        - name: Build and Deploy
+          name: Build and Deploy
