@@ -23,16 +23,13 @@ use Gedmo\Mapping\Annotation\Blameable;
 #[ApiResource(
     operations: [
         new Get(),
-        new Put(
-            denormalizationContext: ['groups' => ['goal:put']],
-        ),
+        new Put(),
         new Delete(),
         new GetCollection(),
-        new Post(
-            denormalizationContext: ['groups' => ['goal:post']],
-        ),
+        new Post(),
     ],
     normalizationContext: ['groups' => ['goal:read']],
+    denormalizationContext: ['groups' => ['goal:write']],
 )]
 class Goal
 {
