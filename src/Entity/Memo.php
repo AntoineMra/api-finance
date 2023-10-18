@@ -8,18 +8,16 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
-use App\Entity\Enum\GoalStatus;
-use App\Repository\GoalRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use App\Entity\Enum\MemoStatus;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation\Timestampable;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\Uuid;
 use Gedmo\Mapping\Annotation\Blameable;
+use Symfony\Component\Validator\Constraints as Assert;
 
-#[ORM\Entity(repositoryClass: GoalRepository::class)]
+#[ORM\Entity(repositoryClass: MemoRepository::class)]
 #[ApiResource(
     operations: [
         new Get(),
@@ -34,7 +32,7 @@ use Gedmo\Mapping\Annotation\Blameable;
     ],
     normalizationContext: ['groups' => ['memo:read']],
 )]
-class Goal
+class Memo
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]

@@ -2,7 +2,7 @@
 
 namespace App\Entity\Enum;
 
-enum GoalStatus: string
+enum MemoStatus: string
 {
     case Ongoing = 'ongoing';
     case Closed = 'closed';

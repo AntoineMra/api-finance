@@ -67,7 +67,7 @@ class BudgetFileParser implements BudgetFileParserInterface
         foreach ($records as $record) {
             $transaction = new Transaction();
 
-            if (isset($record['Crédit'])) {
+            if ($record['Cr?dit'] !== "") {
                 $transaction->setType(TransactionType::Income);
                 $transaction->setAmount((int)$record['Cr?dit']);
             } else {
