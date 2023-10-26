@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Elasticsearch\Filter\MatchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
@@ -9,6 +11,7 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use App\Repository\CategoryRepository;
+use App\Entity\Enum\CategoryType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -22,16 +25,16 @@ use Gedmo\Mapping\Annotation\Blameable;
         new Get(),
         new Put(),
         new Delete(),
-        new GetCollection(normalizationContext: ['groups' => ['category:read']]),
+        new GetCollection(),
         new Post(),
     ],
     normalizationContext: ['groups' => ['category:read']],
     denormalizationContext: ['groups' => ['category:write']]
 )]
+#[ApiFilter(MatchFilter::class, properties: ['type'])]
 class Category
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
     #[ORM\Column(type: 'uuid', unique: true)]
     #[Groups('category:read')]
     private ?Uuid $id;
@@ -48,6 +51,10 @@ class Category
     #[ORM\OneToMany(mappedBy: 'category', targetEntity: Transaction::class, orphanRemoval: false)]
     #[Groups(['category:read', 'domain:read'])]
     private Collection $transactions;
+
+    #[ORM\Column(length: 255,  enumType: CategoryType::class)]
+    #[Groups(['transaction:read', 'category:read', 'category:write'])]
+    private ?CategoryType $type;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[Blameable(on: 'create')]
@@ -132,6 +139,18 @@ class Category
     public function setCreatedBy($createdBy)
     {
         $this->createdBy = $createdBy;
+
+        return $this;
+    }
+
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    public function setType($type)
+    {
+        $this->type = $type;
 
         return $this;
     }

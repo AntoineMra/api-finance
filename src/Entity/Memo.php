@@ -35,7 +35,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Memo
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
     #[ORM\Column(type: 'uuid', unique: true)]
     #[Groups('memo:read')]
     private ?Uuid $id;

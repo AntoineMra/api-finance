@@ -16,3 +16,6 @@ App\Entity\Domain:
     domain_5 (extends domain):
         label: 'Autres'
         created_by: '@user_1'
+    domain_6 (extends domain):
+        label: 'Revenus'
+        created_by: '@user_1'

@@ -34,7 +34,6 @@ use Gedmo\Mapping\Annotation\Blameable;
 class Goal
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
     #[ORM\Column(type: 'uuid', unique: true)]
     #[Groups('goal:read')]
     private ?Uuid $id;

@@ -32,7 +32,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Domain
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
     #[ORM\Column(type: 'uuid', unique: true)]
     #[Groups(['transaction:read', 'domain:read'])]
     private ?Uuid $id;
