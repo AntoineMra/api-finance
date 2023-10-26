@@ -204,7 +204,16 @@ class Budget
     #[Groups('budget:read')]
     public function getTransactionsPercent(): int
     {
-        return ($this->getTransactionsDifferential() * $this->getTransactionsTotalIncome()) / 100;
+        {
+            $totalIncome = $this->getTransactionsTotalIncome();
+            $totalDiff = $this->getTransactionsDifferential();
+        
+            if ($totalIncome === 0) {
+                return 0;
+            }
+        
+            return round((($totalDiff / $totalIncome) * 100));
+        }
     }
 
 
