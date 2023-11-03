@@ -1,19 +1,6 @@
 App\Entity\Budget:
-    budget_{1..5}:
-        title: 'Budget <current()>'
-        date (unique):  <dateTimeBetween('-20 year', 'now')>
-        status: <enum('App\Entity\Enum\BudgetStatus::Draft')>
-        transactions: ['@transaction_<current()>']
-        created_by: '@user_1'
-
-    budget_6:
+    budget_1:
         title: 'Budget Juin'
         date (unique):  <date_create('2023-06-12')>
         status: <enum('App\Entity\Enum\BudgetStatus::Completed')>
         created_by: '@user_1'
-
-    budget_7:
-        title: 'Budget Juin'
-        date (unique):  <date_create('2023-06-06')>
-        status: <enum('App\Entity\Enum\BudgetStatus::Completed')>
-        created_by: '@user_2'
