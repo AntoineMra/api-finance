@@ -9,10 +9,6 @@ To deploy your application in production, you need a server.
 In this tutorial we will use a virtual machine provided by DigitalOcean, but any Linux server can work.
 If you already have a Linux server with Docker Compose installed, you can skip straight to [the next section](#configuring-a-domain-name).
 
-Otherwise, use [this affiliate link](https://m.do.co/c/5d8aabe3ab80) to get $100 of free credit, create an account, then click on "Create a Droplet".
-Then, click on the "Marketplace" tab under the "Choose an image" section and search for the app named "Docker".
-This will provision an Ubuntu server with the latest versions of Docker and Docker Compose already installed!
-
 To test, the cheapest plan will be enough, but for real production usage you'll probably want to pick a plan in the "general purpose" section that will fit your needs.
 
 ![Deploying a Symfony app on DigitalOcean with Docker Compose](digitalocean-droplet.png)
@@ -28,10 +24,6 @@ ssh root@<droplet-ip>
 ```
 
 ## Configuring a Domain Name
-
-In most cases, you'll want to associate a domain name to your website.
-If you don't own a domain name yet, you'll have to buy one through a registrar.
-Use [this affiliate link](https://gandi.link/f/93650337) to redeem a 20% discount at Gandi.net.
 
 Then create a DNS record of type `A` for your domain name pointing to the IP address of your server.
 

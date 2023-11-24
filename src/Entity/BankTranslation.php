@@ -5,6 +5,7 @@ namespace App\Entity;
 use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Put;
 use App\Entity\Enum\TransactionStatus;
@@ -23,16 +24,17 @@ use Symfony\Component\Validator\Constraints as Assert;
             denormalizationContext: ['groups' => ['bankTranslation:put']],
         ),
         new Delete(),
-        new GetCollection(
-            normalizationContext: ['groups' => ['bankTranslation:read']],
-        ),
+        new GetCollection(),
+        new Get()
     ],
+    normalizationContext: ['groups' => ['bankTranslation:read']],
 )]
 class BankTranslation
 {
     #[ORM\Id]
     #[ORM\Column(type: 'uuid', unique: true)]
     #[Groups(['bankTranslation:read'])]
+    #[ApiProperty(identifier: true)]
     private ?Uuid $id;
 
     #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
@@ -68,7 +70,7 @@ class BankTranslation
         return $this->id = $id ?? Uuid::v6();
     }
 
-    public function getCategory()
+    public function getCategory(): ?Category
     {
         return $this->category;
     }

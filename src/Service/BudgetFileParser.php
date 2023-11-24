@@ -129,7 +129,6 @@ class BudgetFileParser implements BudgetFileParserInterface
     private function createTranslation(string $label): BankTranslation
     {
         $isLabelParsed = $this->bankTranslationRepository->isLabelParsed($label, TransactionStatus::Draft);
-        
         if ($isLabelParsed !== null) {
             return $isLabelParsed;
         }

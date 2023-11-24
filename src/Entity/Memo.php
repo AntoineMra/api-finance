@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
@@ -38,6 +39,7 @@ class Memo
     #[ORM\Id]
     #[ORM\Column(type: 'uuid', unique: true)]
     #[Groups('memo:read')]
+    #[ApiProperty(identifier: true)]
     private ?Uuid $id;
 
     #[ORM\Column(type: Types::TEXT)]

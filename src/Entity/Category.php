@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use ApiPlatform\Elasticsearch\Filter\MatchFilter;
 use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
@@ -37,6 +38,7 @@ class Category
     #[ORM\Id]
     #[ORM\Column(type: 'uuid', unique: true)]
     #[Groups('category:read')]
+    #[ApiProperty(identifier: true)]
     private ?Uuid $id;
 
     #[ORM\Column(length: 255)]

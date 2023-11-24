@@ -21,6 +21,7 @@ use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Elasticsearch\Filter\MatchFilter;
 use Gedmo\Mapping\Annotation\Blameable;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: TransactionRepository::class)]
 #[ApiResource(
@@ -48,14 +49,19 @@ class Transaction
     #[ORM\Id]
     #[ORM\Column(type: 'uuid', unique: true)]
     #[Groups(['budget:read', 'transaction:read', 'transaction:return'])]
+    #[ApiProperty(identifier: true)]
     private ?Uuid $id;
 
     #[ORM\Column(length: 255)]
     #[Groups(['budget:read', 'transaction:read', 'transaction:return', 'category:read', 'domain:read', 'transaction:write'])]
     private ?string $label = null;
 
-    #[ORM\Column]
+    #[ORM\Column(type: Types::FLOAT)]
     #[Groups(['budget:read', 'transaction:read', 'transaction:return', 'category:read', 'domain:read', 'transaction:write'])]
+    #[Assert\NotBlank(groups: ['transaction:write'])]
+    #[Assert\PositiveOrZero(groups: ['transaction:write'])]
+    #[Assert\Type(type: 'float', groups: ['transaction:write'])]
+    #[ApiProperty(example: 76.34, types: [ 'number'])]
     private float $amount;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -160,6 +166,16 @@ class Transaction
         $this->type = $type;
 
         return $this;
+    }
+
+    public function getComment(): ?string
+    {
+        return $this->comment;
+    }
+
+    public function setComment(?string $comment): void
+    {
+        $this->comment = $comment;
     }
 
     public function getBudget(): ?Budget

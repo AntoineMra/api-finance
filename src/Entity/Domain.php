@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
@@ -33,11 +34,12 @@ class Domain
 {
     #[ORM\Id]
     #[ORM\Column(type: 'uuid', unique: true)]
-    #[Groups(['transaction:read', 'domain:read'])]
+    #[Groups(['transaction:read', 'domain:read', 'category:read'])]
+    #[ApiProperty(identifier: true)]
     private ?Uuid $id;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['transaction:read', 'domain:read', 'domain:write'])]
+    #[Groups(['transaction:read', 'category:read', 'domain:read', 'domain:write'])]
     private ?string $label = null;
 
     #[ORM\OneToMany(mappedBy: 'domain', targetEntity: Category::class, orphanRemoval: true)]

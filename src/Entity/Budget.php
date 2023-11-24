@@ -47,6 +47,7 @@ class Budget
     #[ORM\Id]
     #[ORM\Column(type: 'uuid', unique: true)]
     #[Groups('budget:read')]
+    #[ApiProperty(identifier: true)]
     private ?Uuid $id;
 
     #[ORM\Column(length: 255)]
@@ -187,7 +188,8 @@ class Budget
         $totalExpense = 0;
         /** @var Transaction $transaction */
         foreach ($this->transactions as $transaction) {
-            if ($transaction->getType() === TransactionType::Expense) {
+            if ($transaction->getType() === TransactionType::Expense
+            && $transaction->getCategory()?->getLabel() !== 'Epargne') {
                 $totalExpense += $transaction->getAmount();
             }
         }
@@ -207,11 +209,11 @@ class Budget
         {
             $totalIncome = $this->getTransactionsTotalIncome();
             $totalDiff = $this->getTransactionsDifferential();
-        
+
             if ($totalIncome === 0) {
                 return 0;
             }
-        
+
             return round((($totalDiff / $totalIncome) * 100));
         }
     }
