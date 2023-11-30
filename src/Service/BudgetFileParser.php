@@ -84,6 +84,9 @@ class BudgetFileParser implements BudgetFileParserInterface
                 $transaction->setCategory($bankTranslation->getCategory());
                 $transaction->setStatus(TransactionStatus::Validated);
 
+                $this->entityManager->persist($transaction);
+                $this->entityManager->flush();
+
                 $validatedTransactions[] = $transaction;
             } else {
                 $draftObject[] = [
