@@ -60,14 +60,14 @@ class BankTranslation
     #[Blameable(on: 'create')]
     private ?User $createdBy;
 
-    public function __construct()
+    public function __construct(?Uuid $id)
     {
         $this->id = $id ?? Uuid::v6();
     }
 
     public function getId(): ?Uuid
     {
-        return $this->id = $id ?? Uuid::v6();
+        return $this->id;
     }
 
     public function getCategory(): ?Category

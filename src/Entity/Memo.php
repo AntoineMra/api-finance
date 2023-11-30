@@ -75,7 +75,7 @@ class Memo
 
     public function getId(): ?Uuid
     {
-        return $this->id = $id ?? Uuid::v6();
+        return $this->id;
     }
 
     public function getContent(): string

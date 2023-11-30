@@ -15,13 +15,12 @@ use League\Csv\UnavailableStream;
 use Symfony\Component\Finder\Finder;
 use App\Entity\Enum\TransactionStatus;
 use App\Repository\BankTranslationRepository;
-use Doctrine\DBAL\Driver\Mysqli\Initializer\Charset;
 
 class BudgetFileParser implements BudgetFileParserInterface
 {
     public function __construct(
         private readonly BankTranslationRepository $bankTranslationRepository,
-        private readonly EntityManagerInterface $entityManager
+        private readonly EntityManagerInterface $entityManager,
     ) {
     }
 
@@ -92,8 +91,6 @@ class BudgetFileParser implements BudgetFileParserInterface
                     'transaction' => $transaction
                 ];
             }
-
-
         }
 
         return [
