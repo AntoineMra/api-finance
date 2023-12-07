@@ -140,7 +140,7 @@ class Budget
     }
 
     /**
-     * @return Collection<int, Transaction>
+     * @return Collection<float, Transaction>
      */
     public function getTransactions(): Collection
     {
@@ -169,7 +169,7 @@ class Budget
     }
 
     #[Groups('budget:read')]
-    public function getTransactionsTotalIncome(): int
+    public function getTransactionsTotalIncome(): float
     {
         $totalIncome = 0;
         /** @var Transaction $transaction */
@@ -183,7 +183,7 @@ class Budget
     }
 
     #[Groups('budget:read')]
-    public function getTransactionsTotalExpense(): int
+    public function getTransactionsTotalExpense(): float
     {
         $totalExpense = 0;
         /** @var Transaction $transaction */
@@ -198,29 +198,27 @@ class Budget
     }
 
     #[Groups('budget:read')]
-    public function getTransactionsDifferential(): int
+    public function getTransactionsDifferential(): float
     {
         return $this->getTransactionsTotalIncome() - $this->getTransactionsTotalExpense();
     }
 
     #[Groups('budget:read')]
-    public function getTransactionsPercent(): int
+    public function getTransactionsPercent(): float
     {
-        {
-            $totalIncome = $this->getTransactionsTotalIncome();
-            $totalDiff = $this->getTransactionsDifferential();
+        $totalIncome = $this->getTransactionsTotalIncome();
+        $totalDiff = $this->getTransactionsDifferential();
 
-            if ($totalIncome === 0) {
-                return 0;
-            }
-
-            return round((($totalDiff / $totalIncome) * 100));
+        if ($totalIncome == 0) {
+            return 0;
         }
+
+        return round((($totalDiff / $totalIncome) * 100));
     }
 
 
     #[Groups('budget:read')]
-    public function getTransactionsMedium(): int
+    public function getTransactionsMedium(): float
     {
         $medium = 0;
         /** @var Transaction $transaction */

@@ -68,10 +68,10 @@ class BudgetFileParser implements BudgetFileParserInterface
 
             if ($record['Cr?dit'] !== "") {
                 $transaction->setType(TransactionType::Income);
-                $transaction->setAmount((int)$record['Cr?dit']);
+                $transaction->setAmount(floatval(str_replace(',', '.', $record['Cr?dit'])));
             } else {
                 $transaction->setType(TransactionType::Expense);
-                $transaction->setAmount(abs((int)$record['D?bit']));
+                $transaction->setAmount(abs(floatval(str_replace(',', '.', $record['D?bit']))));
             }
 
             $transaction->setDate($record['Date']);
